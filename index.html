@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Le Trésor de Pepe el Cenachero</title>
-<meta name="description" content="Jeu de piste familial dans l'hypercentre de Málaga pour 4 jeunes enquêteurs (5, 8, 9 et 12 ans), avec navigation Google Maps intégrée.">
+<meta name="description" content="Jeu de piste familial dans l'hypercentre de Málaga pour 4 jeunes enquêteurs (5, 8, 9 et 12 ans), avec navigation par indications géographiques et panneaux de rue.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐟</text></svg>">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bevan&family=Rubik:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap">
 <style>
@@ -199,6 +199,10 @@ button{font-family:inherit;}
 }
 .maps-link:active{transform:translate(3px,3px); box-shadow:none;}
 
+.lost-fallback{margin-top:2px;}
+.lost-fallback summary{cursor:pointer; font-size:.85rem; color:var(--ink-soft); font-weight:600;}
+.lost-fallback .maps-link{margin-top:8px; padding:10px; font-size:.9rem;}
+
 .char-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
 @media (max-width:420px){.char-grid{grid-template-columns:1fr;}}
 .char-card{
@@ -268,8 +272,8 @@ button{font-family:inherit;}
   var CHAR_ORDER = ['camille','maeva','madeline','leopold'];
 
   function buildMapsUrl(query){
-    // Une simple recherche (pas un itinéraire tout calculé) : c'est l'enfant qui
-    // appuiera lui-même sur « Itinéraire » puis choisira le mode piéton dans l'appli.
+    // Filet de sécurité uniquement : la navigation principale se fait par
+    // indications géographiques et panneaux de rue, pas par l'appli de carte.
     return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query);
   }
   var FULL_ROUTE_URL = 'https://www.google.com/maps/dir/?api=1' +
@@ -316,6 +320,7 @@ button{font-family:inherit;}
     {
       title:"Calle Marqués de Larios", subtitle:"La rue qui dansait", distance:"0,6 km",
       mapsQuery:"Calle Marqués de Larios, Málaga, Espagne",
+      arrival:"Depuis la Plaza de la Marina, repérez une large avenue piétonne pavée de marbre clair qui part vers le NORD. Un panneau de rue, sur le mur d’un immeuble à l’angle, indique son nom : <strong>Calle Marqués de Larios</strong>. Remontez-la tout droit, environ 600 mètres.",
       story:"Bienvenue sur la plus belle avenue de Málaga, dessinée à la fin du 19e siècle par l’architecte Eduardo Strachan. Regardez les angles des immeubles : tout ronds, comme des bonbons ! Le jour de l’inauguration en 1891, la rue était recouverte d’un vrai parquet en bois ciré, si brillant qu’on la surnommait le « Salón de Baile » — littéralement le salon de danse — comme une immense salle de bal à ciel ouvert. Les habitants marchaient dessus en chaussons de feutre pour ne pas le rayer, et les chiens (et les chevaux !) étaient formellement interdits — pas question de glisser sur une bêtise canine en pleine valse.",
       anecdote:"Imaginez la scène : toute la ville en chaussons pour ne pas abîmer le parquet… jusqu’au jour où une inondation a tout emporté d’un coup, chaussons compris ! Depuis, la rue a un sol en pierre bien plus difficile à noyer.",
       extra:"L’architecte Eduardo Strachan s’est inspiré de la ville américaine de Chicago pour aligner parfaitement les corniches des toits, créant une perspective si rectiligne qu’elle mène tout droit à la Plaza de la Constitución. En 2018, cette rue a aussi battu un record du monde : 3920 danseurs de flamenco en même temps ! Et en 1931, la statue du marquis Larios a même fini à la mer, jetée par des révolutionnaires, avant de revenir sagement sur son socle après la guerre civile — un marquis qui a fait trempette bien malgré lui.",
@@ -348,6 +353,7 @@ button{font-family:inherit;}
     {
       title:"Plaza de la Constitución", subtitle:"La bataille des sirènes", distance:"1,2 km",
       mapsQuery:"Plaza de la Constitución, Málaga, Espagne",
+      arrival:"Continuez tout droit plein NORD sur la Calle Marqués de Larios, environ 600 mètres. La rue s’ouvre directement sur une grande place pavée avec une fontaine au centre : impossible de la manquer, c’est elle qui y mène.",
       story:"Voici la Fuente de Génova, une fontaine en marbre blanc sculptée en Italie il y a près de 500 ans ! Une légende raconte qu’elle voyageait tranquillement en bateau… jusqu’à ce que des pirates la kidnappent en pleine mer ! Elle a fini par être reprise par des navires espagnols, comme un trésor volé qu’on récupère à la loyale. Regardez ses trois étages : en bas des créatures marines, au milieu des sirènes avec des dauphins, et tout en haut Neptune, le roi de la mer, brandissant son arme à trois pointes.",
       anecdote:"Une fontaine kidnappée par des pirates, récupérée en pleine bataille navale… et qui finit sa carrière tranquillement au milieu d’une place, à arroser des touristes et des pigeons trop curieux. Quelle retraite bien méritée !",
       extra:null,
@@ -379,6 +385,7 @@ button{font-family:inherit;}
     ,{
       title:"Pasaje de Chinitas & Église San Juan", subtitle:"Les cinq boules mystérieuses", distance:"1,9 km",
       mapsQuery:"Iglesia de San Juan Bautista, Málaga, Espagne",
+      arrival:"Depuis la fontaine, cherchez à l’angle NORD-EST de la place un petit passage couvert sous une arche : le <strong>Pasaje de Chinitas</strong>. Traversez-le, puis tournez vers l’OUEST dans la <strong>Calle Santa María</strong> — vérifiez son nom sur le panneau ! Suivez-la environ 700 mètres jusqu’à une petite place avec une église à tour jaune.",
       story:"Ce passage couvert, le Pasaje de Chinitas, était autrefois un couvent de religieuses, puis un célèbre café flamenco chanté par le poète Federico García Lorca — de la prière au tour de chant, il y a eu du changement de programme ! En sortant vers l’église San Juan Bautista, regardez sa tour, reconstruite après un terrible tremblement de terre en 1680 : cinq boules de pierre y sont accrochées, en forme de flèche ! On les appelle « Las Cinco Bolas ». Boulets de canon d’un ancien siège, message secret pour retrouver la maison d’un juge, ou partie de pétanque géante abandonnée par des géants pressés ? Le mystère reste entier…",
       anecdote:"Cinq boules de pierre accrochées à un mur depuis des siècles, et personne ne sait vraiment pourquoi : c’est sans doute l’énigme la plus tenace de tout Málaga. Même les guides touristiques finissent par hausser les épaules en souriant !",
       extra:null,
@@ -409,6 +416,7 @@ button{font-family:inherit;}
     ,{
       title:"Marché Atarazanas", subtitle:"La pause Torta Loca", distance:"2,5 km",
       mapsQuery:"Mercado Central de Atarazanas, Málaga, Espagne",
+      arrival:"Quittez la place par la <strong>Calle San Juan</strong>, la rue commerçante qui part devant l’église — cherchez son panneau ! Suivez-la puis enchaînez sur la <strong>Calle Sagasta</strong>. Le grand marché couvert et sa porte en marbre apparaissent au bout, vers l’OUEST, après environ 600 mètres.",
       story:"Vous voici près du Marché Atarazanas ! Sa monumentale porte en marbre du 14e siècle, aux arches en fer à cheval typiques de l’art nasride, marquait autrefois l’entrée d’un chantier naval militaire — même s’il n’y a plus une seule goutte d’eau à des rues à la ronde aujourd’hui. Arrêtez-vous ensuite devant une pâtisserie pour goûter LA gourmandise de Málaga : la Torta Loca (le « gâteau fou »), inventée à la fin des années 1950 par le pâtissier Eduardo Rubio. Deux disques de pâte feuilletée, une généreuse crème pâtissière, un glaçage orange fluo à réveiller un mort… et une demi-cerise confite rouge vif au centre, comme un gros bouton d’alarme !",
       anecdote:"« La Loca », ça veut dire « la folle » en espagnol. Un gâteau qui porte un nom pareil, ça promet forcément d’être délicieux — ou alors c’est le pâtissier qui était un tout petit peu fou de le rendre aussi orange.",
       extra:"Son nom vient d’une chanson à la radio en 1954 : « À la folie on vit mieux » (A lo loco se vive mejor) ! Après la guerre, les Malaguègnes avaient bien besoin d’un peu de folie douce et de sucre.",
@@ -441,6 +449,7 @@ button{font-family:inherit;}
     ,{
       title:"Puente de los Alemanes & Cathédrale", subtitle:"Le grand sauvetage", distance:"3,2 km",
       mapsQuery:"Puente de los Alemanes, Málaga, Espagne",
+      arrival:"En sortant du marché, dirigez-vous vers le lit du fleuve tout proche (le Guadalmedina) et remontez-le vers le NORD, environ 700 mètres. Cherchez le panneau <strong>Puente de los Alemanes</strong> : c’est la passerelle métallique noire qui traverse le fleuve.",
       story:"Vous voilà sur le Puente de los Alemanes, au bord du fleuve Guadalmedina. Le 16 décembre 1900, un grand navire de guerre allemand a été jeté contre les rochers du port par une tempête terrible. Les habitants de Málaga, sans hésiter une seconde, se sont jetés à l’eau pour sauver les marins, au péril de leur vie ! Pour les remercier de leur courage, le roi a donné à la ville un titre très spécial. En cadeau, le peuple allemand a offert cette passerelle. Juste à côté, la Cathédrale révèle un secret : il lui manque quelque chose — et depuis, elle porte fièrement son petit défaut comme une médaille !",
       anecdote:"La Cathédrale n’a jamais eu assez d’argent pour terminer sa deuxième tour. Résultat : depuis plus de deux siècles, elle porte le surnom de « La Manquita » (la manchote) — la seule star de Málaga qui assume totalement d’être inachevée.",
       extra:null,
@@ -696,21 +705,25 @@ button{font-family:inherit;}
   function footerSectionHtml(step, stepIndex){
     if (!state.teamDone[stepIndex]) return '';
     var isLast = stepIndex === STEPS.length - 1;
-    var mapsCard = '';
+    var navCard = '';
     if (!isLast){
       var next = STEPS[stepIndex+1];
       var nav = navigatorFor(stepIndex);
       var isMe = nav.key === state.active;
-      mapsCard = `<div class="card char char-${nav.key}">
+      navCard = `<div class="card char char-${nav.key}">
         <div class="eyebrow"><span class="dot"></span>À vous de naviguer 🧭</div>
-        <p>${isMe ? 'C’est ton tour' : 'C’est le tour de ' + nav.emoji + ' ' + nav.name} de guider le groupe avec Google Maps ! ${isMe ? 'Ouvre' : 'Passe-lui l’iPad, puis ouvre'} l’appli, cherche le lieu, appuie sur <strong>Itinéraire</strong>, puis choisis le mode <strong>piéton 🚶</strong> pour trouver le chemin jusqu’à :</p>
+        <p>${isMe ? 'C’est ton tour' : 'C’est le tour de ' + nav.emoji + ' ' + nav.name} de guider le groupe jusqu’au prochain arrêt ! ${isMe ? 'Lis' : 'Passe-lui l’iPad pour qu’il ou elle lise'} bien les indications ci-dessous, sors ta boussole, et repère les panneaux de rue — c’est toi qui montres le chemin, sans écran de carte !</p>
         <p class="prompt">📍 ${next.title}</p>
-        <a class="maps-link" href="${buildMapsUrl(next.mapsQuery)}" target="_blank" rel="noopener">🗺️ Ouvrir Google Maps</a>
+        <p>${next.arrival}</p>
+        <details class="lost-fallback">
+          <summary>🆘 Vraiment perdus ? (à n’ouvrir qu’en dernier recours)</summary>
+          <a class="maps-link" href="${buildMapsUrl(next.mapsQuery)}" target="_blank" rel="noopener">🗺️ Ouvrir Google Maps</a>
+        </details>
         ${isMe ? '' : `<button class="btn btn-ghost" onclick="PG.switchChar('${nav.key}')">↪ Passer sur le profil de ${nav.name}</button>`}
       </div>`;
     }
     return `<div class="card"><div class="eyebrow"><span class="dot"></span>Le sais-tu ?</div><p>${step.funfact}</p></div>
-      ${mapsCard}
+      ${navCard}
       <button class="btn btn-go btn-block" onclick="PG.nextStep()">${isLast ? '🏆 Voir le diplôme final' : '➡️ Étape suivante'}</button>`;
   }
 
@@ -746,7 +759,7 @@ button{font-family:inherit;}
         </div>
         <a class="maps-link" href="${FULL_ROUTE_URL}" target="_blank" rel="noopener">🗺️ Aperçu du parcours complet (pour les parents)</a>
       </div>
-      <p class="footer-note">À chaque étape, les 4 enfants font chacun leur mission à tour de rôle sur le même iPad — les pastilles en haut indiquent qui a déjà joué. Puis un enfant différent ouvre Google Maps pour guider le groupe.</p>
+      <p class="footer-note">À chaque étape, les 4 enfants font chacun leur mission à tour de rôle sur le même iPad — les pastilles en haut indiquent qui a déjà joué. Puis un enfant différent guide le groupe grâce à des indications géographiques (pas de carte !) : direction, panneaux de rue à repérer, distance à parcourir.</p>
     </div>`;
   }
 
