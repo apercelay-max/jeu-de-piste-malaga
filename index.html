@@ -135,6 +135,12 @@ button{font-family:inherit;}
 .extra-fact{
   margin-top:10px; padding-top:8px; border-top:1px dashed var(--line); font-size:.88rem; color:var(--ink-soft);
 }
+.anecdote{
+  margin-top:10px; padding:8px 10px; border-radius:10px; background:color-mix(in srgb, var(--buganvilla) 12%, transparent);
+  font-size:.9rem; color:var(--ink);
+}
+.defi-card{border-color:var(--sol); border-width:2.5px;}
+.defi-card .btn{align-self:flex-start;}
 
 .card{
   background:var(--paper); border:2px solid var(--line); border-radius:14px; padding:16px;
@@ -280,41 +286,44 @@ button{font-family:inherit;}
     {
       title:"La Plaza de la Marina", subtitle:"Un conteur danois au soleil", distance:"0,0 km",
       mapsQuery:"Plaza de la Marina, Málaga, Espagne",
-      story:"Regardez ce monsieur en bronze, assis tranquillement sur un banc : pas de couronne, pas d’épée, juste un carnet ! C’est Hans Christian Andersen, l’auteur du Vilain Petit Canard. En octobre 1862, il est venu à Málaga et a tellement aimé le soleil qu’il l’a écrit dans son carnet de voyage.",
-      extra:"Sur la plaque, une date : 1862. Étrange pour un conteur mélancolique de n’avoir trouvé ici aucune raison d’être triste !",
+      story:"Regardez ce monsieur en bronze, assis tranquillement sur un banc avec un carnet à la main : pas de couronne, pas d’épée, pas même un pigeon sur l’épaule. C’est Hans Christian Andersen, l’auteur du Vilain Petit Canard ! Il venait du Danemark, un pays si froid et si pluvieux que même les canards y portent un ciré. En octobre 1862, il a débarqué à Málaga et il a été tellement ébloui par le soleil qu’il a écrit dans son carnet qu’il n’arrivait plus DU TOUT à être triste. Un comble, pour l’inventeur des histoires les plus tristes du monde !",
+      anecdote:"Allez donc vérifier : à force que des milliers de touristes viennent s’asseoir à côté de lui pour un selfie, le bronze du banc est-il plus brillant à certains endroits que sur le reste de la statue ?",
+      extra:"Andersen avait 57 ans lors de ce voyage, et cela faisait déjà plus de 30 ans qu’il parcourait l’Europe pour fuir le mauvais temps danois. Il est mort treize ans plus tard, en 1875, sans jamais avoir arrêté d’écrire — ni de voyager.",
       missions:{
         camille:{prompt:"Regarde la statue : Monsieur Andersen est-il assis ou debout ?", type:"choice", options:["Assis 🪑","Debout 🚶"], answer:0,
-          success:"Bravo Camille ! Bien assis, comme pour écouter une histoire.", hint:"Regarde s’il a les jambes pliées sur le banc…",
+          success:"Bravo Camille ! Bien assis, comme pour écouter une histoire — ou pour bronzer, allez savoir.", hint:"Regarde s’il a les jambes pliées sur le banc…",
           piece:{emoji:"🪑",label:"Le Banc"}},
         maeva:{prompt:"Regarde ses mains : que tient Andersen ?", type:"choice", options:["Une épée ⚔️","Un carnet 📓","Un parapluie ☂️"], answer:1,
-          success:"Exact ! Un conteur ne sort jamais sans son carnet d’idées.", hint:"Ce n’est pas une arme, c’est un objet pour écrire…",
+          success:"Exact ! Un conteur ne sort jamais sans son carnet d’idées, même pas pour aller à la plage.", hint:"Ce n’est pas une arme, c’est un objet pour écrire…",
           piece:{emoji:"📓",label:"Le Carnet"}},
         madeline:{prompt:"Observe bien : la statue est-elle posée sur un grand socle de pierre, comme une statue de roi, ou directement sur un banc public comme tout le monde ?", type:"choice",
           options:["Sur un grand socle royal","Sur un simple banc public"], answer:1,
-          success:"Bien vu Madeline ! Andersen est assis parmi les gens, pas sur un piédestal.", hint:"Cherche s’il y a un bloc de pierre surélevé sous lui…",
+          success:"Bien vu ! Andersen est assis parmi les gens, pas sur un piédestal — même les plus grands conteurs aiment garder les pieds sur le trottoir.", hint:"Cherche s’il y a un bloc de pierre surélevé sous lui…",
           piece:{emoji:"🎩",label:"Le Banc Public"}},
         leopold:{prompt:"Additionne les 4 chiffres de l’année du voyage (1+8+6+2), puis calcule l’écart avec le nombre de lettres du nom de la ville natale d’Andersen, Odense (6 lettres). Quel est ce nombre-pivot ?", type:"number", answer:11,
-          success:"Parfait ! 17 et 6 donnent le nombre-pivot 11.", hint:"1+8+6+2 = 17. Puis 17 − 6 = ?",
+          success:"Parfait ! 17 et 6 donnent le nombre-pivot 11 — pas besoin de calculatrice, juste dix doigts et un peu de logique.", hint:"1+8+6+2 = 17. Puis 17 − 6 = ?",
           piece:{emoji:"🔢",label:"Nombre 11"}}
       },
       teamRiddle:{prompt:"Demandez à Léopold, le Décrypteur : quel est le nombre-pivot qu’il a trouvé ? Il ouvre la direction à suivre !", type:"number", answer:11,
-        success:"Le nombre 11 ouvre la route vers le NORD, direction la grande avenue commerçante !"},
-      funfact:"Un conteur triste incapable de trouver une seule raison d’être triste ici : voilà le vrai miracle andalou !"
+        success:"Le nombre 11 ouvre la route vers le NORD, direction la grande avenue commerçante ! En avant, moussaillons."},
+      funfact:"Un conteur triste, venu d’un pays où il pleut 300 jours par an, incapable de trouver une seule raison d’être triste ici : voilà le vrai miracle andalou !",
+      funChallenge:"🗿 Défi Statue : toute l’équipe s’installe à côté d’Andersen et reste aussi immobile qu’une statue de bronze pendant 5 secondes. Le premier qui bouge (ou qui rigole) refait le défi !"
     },
     {
       title:"Calle Marqués de Larios", subtitle:"La rue qui dansait", distance:"0,6 km",
       mapsQuery:"Calle Marqués de Larios, Málaga, Espagne",
-      story:"Bienvenue sur la plus belle avenue de Málaga, dessinée à la fin du 19e siècle par l’architecte Eduardo Strachan. Regardez les angles des immeubles : tout ronds ! Le jour de l’inauguration en 1891, la rue était recouverte d’un parquet en bois ciré, comme une salle de bal : on l’appelait le « Salón de Baile » ! Chiens et chevaux étaient interdits, pour ne pas rayer le beau parquet.",
-      extra:"En 2018, cette rue a battu un record du monde : 3920 danseurs de flamenco en même temps ! Et en 1931, la statue du marquis Larios a même fini à la mer, jetée par des révolutionnaires, avant de revenir sur son socle après la guerre civile.",
+      story:"Bienvenue sur la plus belle avenue de Málaga, dessinée à la fin du 19e siècle par l’architecte Eduardo Strachan. Regardez les angles des immeubles : tout ronds, comme des bonbons ! Le jour de l’inauguration en 1891, la rue était recouverte d’un vrai parquet en bois ciré, comme une immense salle de bal à ciel ouvert. Les habitants marchaient dessus en chaussons de feutre pour ne pas le rayer, et les chiens (et les chevaux !) étaient formellement interdits — pas question de glisser sur une bêtise canine en pleine valse.",
+      anecdote:"Imaginez la scène : toute la ville en chaussons pour ne pas abîmer le parquet… jusqu’au jour où une inondation a tout emporté d’un coup, chaussons compris ! Depuis, la rue a un sol en pierre bien plus difficile à noyer.",
+      extra:"En 2018, cette rue a battu un record du monde : 3920 danseurs de flamenco en même temps ! Et en 1931, la statue du marquis Larios a même fini à la mer, jetée par des révolutionnaires, avant de revenir sagement sur son socle après la guerre civile — un marquis qui a fait trempette bien malgré lui.",
       missions:{
         camille:{prompt:"Regarde les coins des immeubles, tout en haut : sont-ils pointus ou tout ronds ?", type:"choice", options:["Pointus ◼️","Tout ronds ⬤"], answer:1,
-          success:"Bravo ! Des coins tout ronds, comme un bonbon.", hint:"Lève les yeux vers le sommet des façades…",
+          success:"Bravo ! Des coins tout ronds, comme un bonbon — dommage, on ne peut pas les croquer.", hint:"Lève les yeux vers le sommet des façades…",
           piece:{emoji:"⬤",label:"Coins Ronds"}},
         maeva:{prompt:"En 1891, un animal n’avait pas le droit de marcher sur le parquet ciré de cette rue. Lequel ?", type:"choice", options:["Le chat 🐈","Le chien 🐕","Le poisson 🐟"], answer:1,
-          success:"Exact, les chiens (et les chevaux !) étaient bannis du salon de danse.", hint:"C’est un animal qui gratte le sol avec ses griffes…",
+          success:"Exact, les chiens (et les chevaux !) étaient bannis du salon de danse — même pas un petit tour de valse pour Médor.", hint:"C’est un animal qui gratte le sol avec ses griffes…",
           piece:{emoji:"🐕",label:"Chien Interdit"}},
         madeline:{prompt:"Regarde le sol aujourd’hui : est-il en bois ciré, ou en belles dalles de pierre claire ?", type:"choice", options:["En bois ciré","En dalles de pierre claire"], answer:1,
-          success:"Oui ! Le parquet a disparu depuis longtemps, emporté par une inondation.", hint:"Le bois n’aurait pas résisté à cent ans de pluie…",
+          success:"Oui ! Le parquet a disparu depuis longtemps, emporté par une inondation — la rue a préféré un sol qui sait nager.", hint:"Le bois n’aurait pas résisté à cent ans de pluie…",
           piece:{emoji:"🪨",label:"Dalles Claires"}},
         leopold:{prompt:"En quel siècle cette avenue a-t-elle été conçue, et pourquoi les angles arrondis empêchent-ils la poussière de former des tourbillons ?", type:"choice",
           options:["18e siècle — le vent rebondit sur les angles pointus","19e siècle — le vent glisse sans à-coup, sans coin pour créer un tourbillon","20e siècle — c’est un hasard, aucune raison"], answer:1,
@@ -323,23 +332,25 @@ button{font-family:inherit;}
       },
       teamRiddle:{prompt:"Comment surnommait-on cette rue à cause de son parquet brillant ? (Rappelez-vous l’histoire de Pepe !)", type:"choice",
         options:["Le Salón de Baile (le salon de danse)","La Casa del Rey","El Jardín Secreto"], answer:0,
-        success:"Le Salón de Baile ! En avant vers la grande place centrale."},
-      funfact:"Imaginez tout le monde marcher en chaussettes de feutre pour ne pas rayer le sol public… quelle drôle d’époque !"
+        success:"Le Salón de Baile ! En avant vers la grande place centrale, sans glisser ni patiner (sauf de joie)."},
+      funfact:"Imaginez tout le monde marcher en chaussettes de feutre pour ne pas rayer un trottoir… et aujourd’hui, on a le droit d’y courir en baskets. Quel progrès !",
+      funChallenge:"🕺 Défi Salón de Baile : faites 3 petits sauts synchronisés sur le sol de la rue, sans glisser, comme si vous dansiez sur le fameux parquet ciré de 1891 !"
     },
     {
       title:"Plaza de la Constitución", subtitle:"La bataille des sirènes", distance:"1,2 km",
       mapsQuery:"Plaza de la Constitución, Málaga, Espagne",
-      story:"Voici la Fuente de Génova, une fontaine en marbre blanc sculptée en Italie il y a près de 500 ans ! La légende raconte qu’elle fut prise sur des bateaux pirates par des navires espagnols. Regardez ses trois étages : en bas des créatures marines, au milieu des sirènes avec des dauphins, et tout en haut Neptune, le roi de la mer, avec son arme à trois pointes.",
+      story:"Voici la Fuente de Génova, une fontaine en marbre blanc sculptée en Italie il y a près de 500 ans ! Une légende raconte qu’elle voyageait tranquillement en bateau… jusqu’à ce que des pirates la kidnappent en pleine mer ! Elle a fini par être reprise par des navires espagnols, comme un trésor volé qu’on récupère à la loyale. Regardez ses trois étages : en bas des créatures marines, au milieu des sirènes avec des dauphins, et tout en haut Neptune, le roi de la mer, brandissant son arme à trois pointes.",
+      anecdote:"Une fontaine kidnappée par des pirates, récupérée en pleine bataille navale… et qui finit sa carrière tranquillement au milieu d’une place, à arroser des touristes et des pigeons trop curieux. Quelle retraite bien méritée !",
       extra:null,
       missions:{
         camille:{prompt:"Regarde tout en haut de la fontaine : quel oiseau est posé là ?", type:"choice", options:["Un aigle 🦅","Un moineau 🐦","Un perroquet 🦜"], answer:0,
-          success:"Un aigle ! Le chef de la sécurité, pour empêcher les pigeons de se baigner avec Neptune.", hint:"C’est un grand oiseau majestueux, pas un petit oiseau du jardin…",
+          success:"Un aigle ! Le chef de la sécurité, pour empêcher les pigeons de se baigner avec Neptune — service assuré même les jours fériés.", hint:"C’est un grand oiseau majestueux, pas un petit oiseau du jardin…",
           piece:{emoji:"🦅",label:"L’Aigle Gardien"}},
         maeva:{prompt:"Regarde les créatures marines tout en bas de la fontaine : ont-elles une seule queue de poisson, ou deux queues ?", type:"choice", options:["Une seule queue","Deux queues"], answer:1,
-          success:"Deux queues ! Ce sont des sirènes bifides. Retiens bien ce chiffre : 2.", hint:"Compte bien sous la ceinture de chaque sirène…",
+          success:"Deux queues ! Ce sont des sirènes bifides. Retiens bien ce chiffre : 2 — pratique pour nager deux fois plus vite.", hint:"Compte bien sous la ceinture de chaque sirène…",
           piece:{emoji:"🧜",label:"2 Queues"}},
         madeline:{prompt:"Regarde le sommet : Neptune tient un objet à trois pointes. Comment s’appelle cet objet ?", type:"choice", options:["Une fourchette","Un trident","Une lance"], answer:1,
-          success:"Un trident ! L’arme du roi des mers.", hint:"Ça ressemble à une fourchette géante à trois dents…",
+          success:"Un trident ! L’arme du roi des mers — bien plus classe qu’une fourchette de pique-nique.", hint:"Ça ressemble à une fourchette géante à trois dents…",
           piece:{emoji:"🔱",label:"Le Trident"}},
         leopold:{prompt:"Compte le nombre de côtés du bassin (c’est un polygone très régulier), puis ajoute le nombre de queues des sirènes que Maeva a trouvé. Quelle lettre de l’alphabet correspond à ce total ?", type:"text", answer:"n",
           success:"12 côtés + 2 queues = 14e lettre : le N, comme Neptune !", hint:"Le bassin a 12 côtés. 12 + 2 = ? Cherche la 14e lettre de l’alphabet…",
@@ -347,70 +358,76 @@ button{font-family:inherit;}
       },
       teamRiddle:{prompt:"La lettre N pointe vers un passage caché. Où se trouve-t-il sur la place ?", type:"choice",
         options:["Angle nord-est","Angle sud-ouest","Au milieu de la fontaine"], answer:0,
-        success:"Angle nord-est ! Direction le passage secret."},
-      funfact:"L’aigle veille jour et nuit : aucun pigeon n’a jamais réussi à piquer une tête avec Neptune !"
+        success:"Angle nord-est ! Direction le passage secret, sans se faire repérer par les pigeons."},
+      funfact:"L’aigle veille jour et nuit : aucun pigeon n’a jamais réussi à piquer une tête avec Neptune ! On raconte même qu’il siffle en espagnol dès qu’un moineau s’approche trop.",
+      funChallenge:"🌊 Défi Sirène : imitez le bruit de l’eau qui coule le plus longtemps possible sans reprendre votre respiration — « Chhhhhhh ! » Le champion remporte les félicitations (très sincères) de Neptune."
     }
     ,{
       title:"Pasaje de Chinitas & Église San Juan", subtitle:"Les cinq boules mystérieuses", distance:"1,9 km",
       mapsQuery:"Iglesia de San Juan Bautista, Málaga, Espagne",
-      story:"Ce passage couvert, le Pasaje de Chinitas, était autrefois un couvent de religieuses, puis un célèbre café flamenco chanté par le poète Federico García Lorca. En sortant vers l’église San Juan Bautista, regardez sa tour, reconstruite après un terrible tremblement de terre en 1680 : cinq boules de pierre y sont accrochées, en forme de flèche ! On les appelle « Las Cinco Bolas ». Boulets de canon d’un ancien siège, ou message secret ? Le mystère reste entier…",
+      story:"Ce passage couvert, le Pasaje de Chinitas, était autrefois un couvent de religieuses, puis un célèbre café flamenco chanté par le poète Federico García Lorca — de la prière au tour de chant, il y a eu du changement de programme ! En sortant vers l’église San Juan Bautista, regardez sa tour, reconstruite après un terrible tremblement de terre en 1680 : cinq boules de pierre y sont accrochées, en forme de flèche ! On les appelle « Las Cinco Bolas ». Boulets de canon d’un ancien siège, message secret pour retrouver la maison d’un juge, ou partie de pétanque géante abandonnée par des géants pressés ? Le mystère reste entier…",
+      anecdote:"Cinq boules de pierre accrochées à un mur depuis des siècles, et personne ne sait vraiment pourquoi : c’est sans doute l’énigme la plus tenace de tout Málaga. Même les guides touristiques finissent par hausser les épaules en souriant !",
       extra:null,
       missions:{
         camille:{prompt:"Les cinq boules de pierre sur la tour sont rangées en forme de quoi ?", type:"choice", options:["Un cœur ❤️","Une flèche ➡️","Une étoile ⭐"], answer:1,
-          success:"Une flèche ! Bien vu, Camille.", hint:"Elles pointent toutes dans la même direction, comme une flèche…",
+          success:"Une flèche ! Bien vu, Camille — tu ferais une excellente chasseuse de trésor.", hint:"Elles pointent toutes dans la même direction, comme une flèche…",
           piece:{emoji:"➡️",label:"La Flèche"}},
         maeva:{prompt:"Compte les boules de pierre sur la tour : combien en vois-tu ?", type:"number", answer:5,
-          success:"Cinq boules exactement !", hint:"Compte-les une par une avec ton doigt…",
+          success:"Cinq boules exactement ! Tu as l’œil d’une vraie guetteuse.", hint:"Compte-les une par une avec ton doigt…",
           piece:{emoji:"5️⃣",label:"Cinq Boules"}},
         madeline:{prompt:"Vers quelle direction pointe la flèche des cinq boules : vers le ciel, ou vers le bas ?", type:"choice", options:["Vers le ciel ☁️","Vers le bas ⬇️"], answer:1,
-          success:"Vers le bas ! Peut-être un message pointant vers une maison du quartier.", hint:"Suis la pointe de la flèche avec ton doigt…",
+          success:"Vers le bas ! Peut-être un message pointant vers une maison du quartier… ou juste vers les pavés, allez savoir avec un mystère vieux de 500 ans.", hint:"Suis la pointe de la flèche avec ton doigt…",
           piece:{emoji:"⬇️",label:"Direction : Bas"}},
         leopold:{prompt:"Calcule l’écart entre l’année du tremblement de terre (1680) et l’année du grand siège (1487). Puis multiplie le nombre de boules (5) par 10, et soustrais ce résultat à ton premier écart. Quelle distance obtiens-tu, en mètres ?", type:"number", answer:143,
           success:"1680 − 1487 = 193, puis 193 − 50 = 143 mètres !", hint:"1680 − 1487 = 193. Puis 5×10 = 50. Enfin 193 − 50 = ?",
           piece:{emoji:"🔟",label:"143 mètres"}}
       },
       teamRiddle:{prompt:"Quelle distance en mètres sépare cette tour du prochain arrêt gourmand ? (Demandez à Léopold, le Décrypteur !)", type:"number", answer:143,
-        success:"143 mètres ! Direction le marché, votre ventre va être content."},
-      funfact:"Cinq boules, un mystère jamais résolu : même les historiens ne sont pas d’accord !"
+        success:"143 mètres ! Direction le marché, votre ventre va être content — et lui, il ne pose jamais d’énigme."},
+      funfact:"Cinq boules, un mystère jamais résolu : même les historiens ne sont pas d’accord — et c’est peut-être la meilleure blague de toute la ville.",
+      funChallenge:"💥 Défi Boulet de Canon : mimez, un par un, cinq boulets de canon qui s’écrasent au sol en comptant à voix haute — BOUM 1 ! BOUM 2 ! … jusqu’à BOUM 5 !"
     }
     ,{
       title:"Marché Atarazanas", subtitle:"La pause Torta Loca", distance:"2,5 km",
       mapsQuery:"Mercado Central de Atarazanas, Málaga, Espagne",
-      story:"Vous voici près du Marché Atarazanas, une ancienne porte de chantier naval du 14e siècle en marbre ! Arrêtez-vous devant une pâtisserie pour goûter LA gourmandise de Málaga : la Torta Loca (le « gâteau fou »), inventée à la fin des années 1950 par le pâtissier Eduardo Rubio. Deux disques de pâte feuilletée, une généreuse crème pâtissière, un glaçage orange fluo… et une demi-cerise confite rouge vif au centre !",
-      extra:"Son nom vient d’une chanson à la radio en 1954 : « À la folie on vit mieux » (A lo loco se vive mejor) !",
+      story:"Vous voici près du Marché Atarazanas, une ancienne porte de chantier naval du 14e siècle en marbre ! Arrêtez-vous devant une pâtisserie pour goûter LA gourmandise de Málaga : la Torta Loca (le « gâteau fou »), inventée à la fin des années 1950 par le pâtissier Eduardo Rubio. Deux disques de pâte feuilletée, une généreuse crème pâtissière, un glaçage orange fluo à réveiller un mort… et une demi-cerise confite rouge vif au centre, comme un gros bouton d’alarme !",
+      anecdote:"« La Loca », ça veut dire « la folle » en espagnol. Un gâteau qui porte un nom pareil, ça promet forcément d’être délicieux — ou alors c’est le pâtissier qui était un tout petit peu fou de le rendre aussi orange.",
+      extra:"Son nom vient d’une chanson à la radio en 1954 : « À la folie on vit mieux » (A lo loco se vive mejor) ! Après la guerre, les Malaguègnes avaient bien besoin d’un peu de folie douce et de sucre.",
       missions:{
         camille:{prompt:"Trouve le gâteau orange avec une petite cerise rouge au centre. Quelle est sa couleur principale ?", type:"choice", options:["Orange 🟠","Bleu 🔵","Vert 🟢"], answer:0,
-          success:"Orange fluo, impossible à manquer !", hint:"Cherche la couleur la plus flashy de la vitrine…",
+          success:"Orange fluo, impossible à manquer — on doit le voir depuis l’espace !", hint:"Cherche la couleur la plus flashy de la vitrine…",
           piece:{emoji:"🟠",label:"Gâteau Orange"}},
         maeva:{prompt:"Goûte un petit morceau : que sens-tu à l’intérieur ?", type:"choice", options:["De la crème pâtissière 🍮","Du chocolat 🍫","De la confiture de fraise 🍓"], answer:0,
-          success:"De la bonne crème pâtissière bien onctueuse !", hint:"C’est doux, jaune pâle, et ça fond dans la bouche…",
+          success:"De la bonne crème pâtissière bien onctueuse — attention à ne pas en mettre partout sur le menton !", hint:"C’est doux, jaune pâle, et ça fond dans la bouche…",
           piece:{emoji:"🍮",label:"Crème Pâtissière"}},
         madeline:{prompt:"Regarde bien le centre du gâteau : la cerise confite est-elle entière, ou coupée en deux (une demi-cerise) ?", type:"choice", options:["Entière","Une demi-cerise"], answer:1,
-          success:"Une demi-cerise, bien rouge, posée pile au centre.", hint:"Observe si elle est ronde en entier ou si elle a un côté plat…",
+          success:"Une demi-cerise, bien rouge, posée pile au centre — l’autre moitié a dû partir en mission secrète.", hint:"Observe si elle est ronde en entier ou si elle a un côté plat…",
           piece:{emoji:"🍒",label:"Demi-Cerise"}},
         leopold:{prompt:"Ce gâteau porte le nom d’une chanson populaire plutôt qu’un nom savant de pâtissier. Pourquoi, selon toi ?", type:"choice",
           options:["Parce que c’était un dessert simple et joyeux pour se remonter le moral après la guerre, comme la chanson","Parce que le pâtissier était réellement fou","Par pur hasard, sans aucune raison"], answer:0,
-          success:"Exactement : un nom populaire et joyeux pour des jours qui avaient besoin de légèreté.", hint:"Pense à l’ambiance d’après-guerre, et à ce que cherchaient les gens à cette époque…",
+          success:"Exactement : un nom populaire et joyeux pour des jours qui avaient besoin de légèreté — bien plus efficace qu’un long discours.", hint:"Pense à l’ambiance d’après-guerre, et à ce que cherchaient les gens à cette époque…",
           piece:{emoji:"🎵",label:"Chanson 1954"}}
       },
       teamRiddle:{prompt:"Tout le monde a goûté la Torta Loca ? Levez les quatre pouces en l’air pour valider l’étape gourmande !", type:"confirm",
-        success:"Quatre pouces levés, quatre enquêteurs rechargés en énergie !"},
-      funfact:"Un gâteau baptisé d’après un tube radiophonique plutôt que par un mot savant de cuisine : voilà qui est bien plus amusant !"
+        success:"Quatre pouces levés, quatre enquêteurs rechargés en énergie — et sans doute un peu de crème sur le nez."},
+      funfact:"Un gâteau baptisé d’après un tube radiophonique plutôt que par un mot savant de cuisine : voilà qui est bien plus amusant qu’un nom en latin imprononçable !",
+      funChallenge:"😋 Défi Gourmand : léchez-vous les babines et poussez le soupir le plus gourmand possible, comme si vous veniez de croquer dans la plus grosse Torta Loca du monde !"
     }
     ,{
       title:"Puente de los Alemanes & Cathédrale", subtitle:"Le grand sauvetage", distance:"3,2 km",
       mapsQuery:"Puente de los Alemanes, Málaga, Espagne",
-      story:"Vous voilà sur le Puente de los Alemanes, au bord du fleuve Guadalmedina. Le 16 décembre 1900, un grand navire de guerre allemand a été jeté contre les rochers du port par une tempête terrible. Les habitants de Málaga se sont jetés à l’eau pour sauver les marins, au péril de leur vie ! Pour les remercier de leur courage, le roi a donné à la ville un titre très spécial. En cadeau, le peuple allemand a offert cette passerelle. Juste à côté, la Cathédrale révèle un secret : il lui manque quelque chose !",
+      story:"Vous voilà sur le Puente de los Alemanes, au bord du fleuve Guadalmedina. Le 16 décembre 1900, un grand navire de guerre allemand a été jeté contre les rochers du port par une tempête terrible. Les habitants de Málaga, sans hésiter une seconde, se sont jetés à l’eau pour sauver les marins, au péril de leur vie ! Pour les remercier de leur courage, le roi a donné à la ville un titre très spécial. En cadeau, le peuple allemand a offert cette passerelle. Juste à côté, la Cathédrale révèle un secret : il lui manque quelque chose — et depuis, elle porte fièrement son petit défaut comme une médaille !",
+      anecdote:"La Cathédrale n’a jamais eu assez d’argent pour terminer sa deuxième tour. Résultat : depuis plus de deux siècles, elle porte le surnom de « La Manquita » (la manchote) — la seule star de Málaga qui assume totalement d’être inachevée.",
       extra:null,
       missions:{
         camille:{prompt:"Regarde la Cathédrale : a-t-elle deux tours pareilles, ou une seule tour terminée ?", type:"choice", options:["Deux tours pareilles 🏰🏰","Une seule tour terminée 🏰"], answer:1,
-          success:"Une seule ! On l’appelle même « La Manquita » à cause de sa tour manquante.", hint:"Compare bien les deux côtés du haut de la cathédrale…",
+          success:"Une seule ! On l’appelle même « La Manquita » à cause de sa tour manquante — elle n’a pas complexé pour autant.", hint:"Compare bien les deux côtés du haut de la cathédrale…",
           piece:{emoji:"🏰",label:"Une Seule Tour"}},
         maeva:{prompt:"Trouve sur la plaque du pont le nom du bateau allemand naufragé. Il commence par un G…", type:"choice", options:["Gneisenau","Bismarck","Titanic"], answer:0,
-          success:"Le Gneisenau ! Bravo pour cette lecture.", hint:"C’est un mot allemand assez long, gravé dans le métal…",
+          success:"Le Gneisenau ! Bravo pour cette lecture — même en allemand, rien ne t’arrête.", hint:"C’est un mot allemand assez long, gravé dans le métal…",
           piece:{emoji:"⚓",label:"Le Gneisenau"}},
         madeline:{prompt:"En quelle année ce naufrage a-t-il eu lieu ?", type:"choice", options:["1900","1850","1950"], answer:0,
-          success:"1900, le 16 décembre exactement !", hint:"C’est le tout début du 20e siècle…",
+          success:"1900, le 16 décembre exactement — même la météo s’en souvient encore.", hint:"C’est le tout début du 20e siècle…",
           piece:{emoji:"🌊",label:"Année 1900"}},
         leopold:{prompt:"Grâce au courage des habitants de Málaga pour sauver les marins allemands, quel titre le roi a-t-il donné à la ville ?", type:"choice",
           options:["« Muy Hospitalaria » (Très Hospitalière)","« Muy Valiente » (Très Courageuse)","« Muy Antigua » (Très Ancienne)"], answer:0,
@@ -418,8 +435,9 @@ button{font-family:inherit;}
           piece:{emoji:"🏅",label:"Muy Hospitalaria"}}
       },
       teamRiddle:{prompt:"Ensemble, à voix haute, dites le titre complet donné à Málaga en l’honneur de ce sauvetage héroïque !", type:"confirm",
-        success:"« Muy Hospitalaria » ! Vous avez percé les secrets de Málaga !"},
-      funfact:"La vraie richesse de Málaga n’est pas dans un coffre au trésor, mais dans son histoire et l’hospitalité de ses habitants."
+        success:"« Muy Hospitalaria » ! Vous avez percé les secrets de Málaga, bravo à toute la brigade !"},
+      funfact:"La vraie richesse de Málaga n’est pas dans un coffre au trésor, mais dans son histoire et l’hospitalité de ses habitants — et un peu, avouons-le, dans les churros qui vous attendent tout près d’ici.",
+      funChallenge:"⚓ Défi Capitaine : tout le monde fait le plus beau salut militaire de capitaine de navire, puis crie en chœur : VIVA MÁLAGA !"
     }
   ];
 
@@ -716,9 +734,11 @@ button{font-family:inherit;}
           <div class="mascot-bubble">
             <p class="mascot-name">Pepe raconte…</p>
             <p>${step.story}</p>
-            ${(state.active==='leopold' && step.extra) ? `<div class="extra-fact">🧠 Anecdote bonus : ${step.extra}</div>` : ''}
+            ${step.anecdote ? `<div class="anecdote">😄 ${step.anecdote}</div>` : ''}
+            ${(state.active==='leopold' && step.extra) ? `<div class="extra-fact">🧠 Anecdote bonus pour toi : ${step.extra}</div>` : ''}
           </div>
         </div>
+        ${step.funChallenge ? `<div class="card defi-card"><div class="eyebrow"><span class="dot"></span>Défi rigolo</div><p>${step.funChallenge}</p><button class="btn" onclick="PG.celebrate()">🎉 C’est fait !</button></div>` : ''}
         ${missionSectionHtml(step, stepIndex)}
         ${teamSectionHtml(step, stepIndex)}
         ${footerSectionHtml(step, stepIndex)}
@@ -749,6 +769,7 @@ button{font-family:inherit;}
         </div>
         ${rows}
         <div class="card"><p><strong>« Muy Hospitalaria »</strong> — le titre que Málaga porte depuis 1900, en mémoire du sauvetage du Gneisenau. La vraie richesse de Málaga n’est pas dans un coffre au trésor, mais dans son histoire et l’hospitalité de ses habitants. ¡Enhorabuena, enquêteurs !</p></div>
+        <div class="card"><p>🍫 <strong>Idée de récompense officielle :</strong> une brigade qui vient de percer les secrets de toute une ville a bien mérité des churros con chocolate. Pepe recommande, et Pepe s’y connaît.</p></div>
         <button class="btn btn-ghost btn-block" onclick="PG.resetGame()">↺ Recommencer l’aventure</button>
       </div>
     </div>`;
@@ -855,7 +876,8 @@ button{font-family:inherit;}
     },
     teamConfirm:function(){ markTeamDone(state.stepIndex); },
     revealTeam:function(){ markTeamDone(state.stepIndex); },
-    nextStep:function(){ state.stepIndex++; saveState(); render(); }
+    nextStep:function(){ state.stepIndex++; saveState(); render(); },
+    celebrate:function(){ burstConfetti(); }
   };
   window.PG = PG;
 
