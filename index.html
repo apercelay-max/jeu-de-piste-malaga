@@ -139,7 +139,6 @@ button{font-family:inherit;}
   margin-top:10px; padding:8px 10px; border-radius:10px; background:color-mix(in srgb, var(--buganvilla) 12%, transparent);
   font-size:.9rem; color:var(--ink);
 }
-.defi-card{border-color:var(--sol); border-width:2.5px;}
 .defi-card .btn{align-self:flex-start;}
 
 .card{
@@ -307,12 +306,17 @@ button{font-family:inherit;}
       teamRiddle:{prompt:"Demandez à Léopold, le Décrypteur : quel est le nombre-pivot qu’il a trouvé ? Il ouvre la direction à suivre !", type:"number", answer:11,
         success:"Le nombre 11 ouvre la route vers le NORD, direction la grande avenue commerçante ! En avant, moussaillons."},
       funfact:"Un conteur triste, venu d’un pays où il pleut 300 jours par an, incapable de trouver une seule raison d’être triste ici : voilà le vrai miracle andalou !",
-      funChallenge:"🗿 Défi Statue : toute l’équipe s’installe à côté d’Andersen et reste aussi immobile qu’une statue de bronze pendant 5 secondes. Le premier qui bouge (ou qui rigole) refait le défi !"
+      funChallenge:{
+        camille:"🗿 Assieds-toi à côté d’Andersen et reste immobile 5 secondes, pas un geste !",
+        maeva:"🔍 Touche le banc en bronze : il est chaud ou froid au soleil ? Annonce ta découverte à voix haute !",
+        madeline:"📓 Fais semblant d’écrire dans un carnet invisible, l’air très inspiré, pendant 3 secondes.",
+        leopold:"🎬 Invente en une phrase la fin d’une histoire triste… qui finit bien, comme Andersen l’aurait fait ici."
+      }
     },
     {
       title:"Calle Marqués de Larios", subtitle:"La rue qui dansait", distance:"0,6 km",
       mapsQuery:"Calle Marqués de Larios, Málaga, Espagne",
-      story:"Bienvenue sur la plus belle avenue de Málaga, dessinée à la fin du 19e siècle par l’architecte Eduardo Strachan. Regardez les angles des immeubles : tout ronds, comme des bonbons ! Le jour de l’inauguration en 1891, la rue était recouverte d’un vrai parquet en bois ciré, comme une immense salle de bal à ciel ouvert. Les habitants marchaient dessus en chaussons de feutre pour ne pas le rayer, et les chiens (et les chevaux !) étaient formellement interdits — pas question de glisser sur une bêtise canine en pleine valse.",
+      story:"Bienvenue sur la plus belle avenue de Málaga, dessinée à la fin du 19e siècle par l’architecte Eduardo Strachan. Regardez les angles des immeubles : tout ronds, comme des bonbons ! Le jour de l’inauguration en 1891, la rue était recouverte d’un vrai parquet en bois ciré, si brillant qu’on la surnommait le « Salón de Baile » — littéralement le salon de danse — comme une immense salle de bal à ciel ouvert. Les habitants marchaient dessus en chaussons de feutre pour ne pas le rayer, et les chiens (et les chevaux !) étaient formellement interdits — pas question de glisser sur une bêtise canine en pleine valse.",
       anecdote:"Imaginez la scène : toute la ville en chaussons pour ne pas abîmer le parquet… jusqu’au jour où une inondation a tout emporté d’un coup, chaussons compris ! Depuis, la rue a un sol en pierre bien plus difficile à noyer.",
       extra:"En 2018, cette rue a battu un record du monde : 3920 danseurs de flamenco en même temps ! Et en 1931, la statue du marquis Larios a même fini à la mer, jetée par des révolutionnaires, avant de revenir sagement sur son socle après la guerre civile — un marquis qui a fait trempette bien malgré lui.",
       missions:{
@@ -325,16 +329,21 @@ button{font-family:inherit;}
         madeline:{prompt:"Regarde le sol aujourd’hui : est-il en bois ciré, ou en belles dalles de pierre claire ?", type:"choice", options:["En bois ciré","En dalles de pierre claire"], answer:1,
           success:"Oui ! Le parquet a disparu depuis longtemps, emporté par une inondation — la rue a préféré un sol qui sait nager.", hint:"Le bois n’aurait pas résisté à cent ans de pluie…",
           piece:{emoji:"🪨",label:"Dalles Claires"}},
-        leopold:{prompt:"En quel siècle cette avenue a-t-elle été conçue, et pourquoi les angles arrondis empêchent-ils la poussière de former des tourbillons ?", type:"choice",
-          options:["18e siècle — le vent rebondit sur les angles pointus","19e siècle — le vent glisse sans à-coup, sans coin pour créer un tourbillon","20e siècle — c’est un hasard, aucune raison"], answer:1,
-          success:"Bien raisonné : fin du 19e siècle, et l’air glisse sur les courbes sans créer de tourbillon.", hint:"Pense à l’aérodynamisme : un coin pointu accroche l’air, une courbe le laisse filer…",
-          piece:{emoji:"🌀",label:"19e Siècle"}}
+        leopold:{prompt:"Le Salón de Baile n’a pas gardé son fameux parquet ciré jusqu’à aujourd’hui. Sachant que le bois déteste l’humidité, et que le lit du fleuve Guadalmedina n’est pas si loin, quelle catastrophe a bien pu emporter ce plancher pour de bon ?", type:"choice",
+          options:["Un incendie géant","Une inondation","Une invasion de termites"], answer:1,
+          success:"Une inondation, exactement ! Le bois et l’eau n’ont jamais fait bon ménage — depuis, la rue préfère un sol en pierre, bien moins capricieux.", hint:"Pense à ce qui peut arriver quand une rivière proche déborde après de fortes pluies…",
+          piece:{emoji:"💧",label:"L’Inondation"}}
       },
       teamRiddle:{prompt:"Comment surnommait-on cette rue à cause de son parquet brillant ? (Rappelez-vous l’histoire de Pepe !)", type:"choice",
         options:["Le Salón de Baile (le salon de danse)","La Casa del Rey","El Jardín Secreto"], answer:0,
         success:"Le Salón de Baile ! En avant vers la grande place centrale, sans glisser ni patiner (sauf de joie)."},
       funfact:"Imaginez tout le monde marcher en chaussettes de feutre pour ne pas rayer un trottoir… et aujourd’hui, on a le droit d’y courir en baskets. Quel progrès !",
-      funChallenge:"🕺 Défi Salón de Baile : faites 3 petits sauts synchronisés sur le sol de la rue, sans glisser, comme si vous dansiez sur le fameux parquet ciré de 1891 !"
+      funChallenge:{
+        camille:"🦶 Fais 3 petits sauts sur un pavé qui brille, sans glisser !",
+        maeva:"🐕 Regarde bien autour de toi : vois-tu un vrai chien se promener dans la rue en ce moment ?",
+        madeline:"💃 Fais 2 pas de danse improvisés, comme si le sol était encore le parquet du Salón de Baile.",
+        leopold:"🧐 Explique en une phrase pourquoi une rue commerçante n’aurait plus jamais l’idée de remettre du bois par terre aujourd’hui."
+      }
     },
     {
       title:"Plaza de la Constitución", subtitle:"La bataille des sirènes", distance:"1,2 km",
@@ -360,7 +369,12 @@ button{font-family:inherit;}
         options:["Angle nord-est","Angle sud-ouest","Au milieu de la fontaine"], answer:0,
         success:"Angle nord-est ! Direction le passage secret, sans se faire repérer par les pigeons."},
       funfact:"L’aigle veille jour et nuit : aucun pigeon n’a jamais réussi à piquer une tête avec Neptune ! On raconte même qu’il siffle en espagnol dès qu’un moineau s’approche trop.",
-      funChallenge:"🌊 Défi Sirène : imitez le bruit de l’eau qui coule le plus longtemps possible sans reprendre votre respiration — « Chhhhhhh ! » Le champion remporte les félicitations (très sincères) de Neptune."
+      funChallenge:{
+        camille:"🌊 Imite le bruit de l’eau qui coule le plus longtemps possible : « Chhhhhhh ! »",
+        maeva:"🧜 Fais ta plus belle pose de sirène, bras arrondis au-dessus de la tête.",
+        madeline:"🔱 Mime Neptune qui brandit son trident, l’air le plus terrible et majestueux possible.",
+        leopold:"🦅 Imite le cri de l’aigle qui surveille la place, le plus impressionnant possible."
+      }
     }
     ,{
       title:"Pasaje de Chinitas & Église San Juan", subtitle:"Les cinq boules mystérieuses", distance:"1,9 km",
@@ -385,7 +399,12 @@ button{font-family:inherit;}
       teamRiddle:{prompt:"Quelle distance en mètres sépare cette tour du prochain arrêt gourmand ? (Demandez à Léopold, le Décrypteur !)", type:"number", answer:143,
         success:"143 mètres ! Direction le marché, votre ventre va être content — et lui, il ne pose jamais d’énigme."},
       funfact:"Cinq boules, un mystère jamais résolu : même les historiens ne sont pas d’accord — et c’est peut-être la meilleure blague de toute la ville.",
-      funChallenge:"💥 Défi Boulet de Canon : mimez, un par un, cinq boulets de canon qui s’écrasent au sol en comptant à voix haute — BOUM 1 ! BOUM 2 ! … jusqu’à BOUM 5 !"
+      funChallenge:{
+        camille:"💥 Mime une boule de pierre qui tombe et fait BOUM en touchant le sol !",
+        maeva:"🕵️ Chuchote à l’oreille d’un coéquipier ta théorie sur le mystère des cinq boules.",
+        madeline:"🎯 Montre du doigt la direction exacte que pointe la flèche de pierre.",
+        leopold:"🧮 Compte le plus vite possible de 1 à 5 en espagnol : ¡uno, dos, tres, cuatro, cinco!"
+      }
     }
     ,{
       title:"Marché Atarazanas", subtitle:"La pause Torta Loca", distance:"2,5 km",
@@ -411,7 +430,12 @@ button{font-family:inherit;}
       teamRiddle:{prompt:"Tout le monde a goûté la Torta Loca ? Levez les quatre pouces en l’air pour valider l’étape gourmande !", type:"confirm",
         success:"Quatre pouces levés, quatre enquêteurs rechargés en énergie — et sans doute un peu de crème sur le nez."},
       funfact:"Un gâteau baptisé d’après un tube radiophonique plutôt que par un mot savant de cuisine : voilà qui est bien plus amusant qu’un nom en latin imprononçable !",
-      funChallenge:"😋 Défi Gourmand : léchez-vous les babines et poussez le soupir le plus gourmand possible, comme si vous veniez de croquer dans la plus grosse Torta Loca du monde !"
+      funChallenge:{
+        camille:"😋 Fais le bruit le plus gourmand possible en regardant la vitrine de la pâtisserie !",
+        maeva:"👃 Ferme les yeux et devine, rien qu’à l’odeur : boulangerie ou poissonnerie ?",
+        madeline:"🎤 Invente un petit slogan publicitaire pour vendre la Torta Loca aux touristes.",
+        leopold:"📻 Fredonne un air complètement inventé, comme si c’était le tube qui a donné son nom au gâteau."
+      }
     }
     ,{
       title:"Puente de los Alemanes & Cathédrale", subtitle:"Le grand sauvetage", distance:"3,2 km",
@@ -437,7 +461,12 @@ button{font-family:inherit;}
       teamRiddle:{prompt:"Ensemble, à voix haute, dites le titre complet donné à Málaga en l’honneur de ce sauvetage héroïque !", type:"confirm",
         success:"« Muy Hospitalaria » ! Vous avez percé les secrets de Málaga, bravo à toute la brigade !"},
       funfact:"La vraie richesse de Málaga n’est pas dans un coffre au trésor, mais dans son histoire et l’hospitalité de ses habitants — et un peu, avouons-le, dans les churros qui vous attendent tout près d’ici.",
-      funChallenge:"⚓ Défi Capitaine : tout le monde fait le plus beau salut militaire de capitaine de navire, puis crie en chœur : VIVA MÁLAGA !"
+      funChallenge:{
+        camille:"🫡 Fais le plus beau salut militaire de capitaine de navire !",
+        maeva:"📣 Crie le plus fort possible : VIVA MÁLAGA !",
+        madeline:"🏰 Cache un bras dans ton dos pour imiter la cathédrale et sa tour manquante.",
+        leopold:"🎖️ Improvise en une phrase le discours du roi qui remet le titre « Muy Hospitalaria » à la ville."
+      }
     }
   ];
 
@@ -738,7 +767,7 @@ button{font-family:inherit;}
             ${(state.active==='leopold' && step.extra) ? `<div class="extra-fact">🧠 Anecdote bonus pour toi : ${step.extra}</div>` : ''}
           </div>
         </div>
-        ${step.funChallenge ? `<div class="card defi-card"><div class="eyebrow"><span class="dot"></span>Défi rigolo</div><p>${step.funChallenge}</p><button class="btn" onclick="PG.celebrate()">🎉 C’est fait !</button></div>` : ''}
+        ${step.funChallenge && step.funChallenge[state.active] ? `<div class="card defi-card char char-${state.active}"><div class="eyebrow"><span class="dot"></span>Défi de ${CHARACTERS[state.active].name}</div><p>${step.funChallenge[state.active]}</p><button class="btn" onclick="PG.celebrate()">🎉 C’est fait !</button></div>` : ''}
         ${missionSectionHtml(step, stepIndex)}
         ${teamSectionHtml(step, stepIndex)}
         ${footerSectionHtml(step, stepIndex)}
