@@ -243,7 +243,9 @@ button{font-family:inherit;}
   var CHAR_ORDER = ['camille','maeva','madeline','leopold'];
 
   function buildMapsUrl(query){
-    return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(query) + '&travelmode=walking';
+    // Une simple recherche (pas un itinéraire tout calculé) : c'est l'enfant qui
+    // appuiera lui-même sur « Itinéraire » puis choisira le mode piéton dans l'appli.
+    return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query);
   }
   var FULL_ROUTE_URL = 'https://www.google.com/maps/dir/?api=1' +
     '&origin=' + encodeURIComponent('Plaza de la Marina, Málaga, Espagne') +
@@ -474,6 +476,7 @@ button{font-family:inherit;}
       <div class="spacer"></div>
       <button class="icon-btn" onclick="PG.openModal('kit')" aria-label="Kit de l’enquêteur">🎒</button>
       <button class="icon-btn" onclick="PG.openModal('parent')" aria-label="Espace parent">👪</button>
+      <button class="icon-btn" onclick="PG.openModal('reset')" aria-label="Réinitialiser le jeu">↺</button>
     </div>`;
   }
 
@@ -552,12 +555,27 @@ button{font-family:inherit;}
     return `<div class="card"><div class="eyebrow"><span class="dot"></span>Énigme d’équipe 🤝</div>${body}</div>`;
   }
 
+  function navigatorFor(stepIndex){
+    return CHARACTERS[CHAR_ORDER[stepIndex % CHAR_ORDER.length]];
+  }
+
   function footerSectionHtml(step, stepIndex){
     if (!state.teamDone[stepIndex]) return '';
     var isLast = stepIndex === STEPS.length - 1;
-    var mapsBtn = isLast ? '' : `<a class="maps-link" href="${buildMapsUrl(STEPS[stepIndex+1].mapsQuery)}" target="_blank" rel="noopener">🗺️ Ouvrir l’itinéraire vers la suite</a>`;
+    var mapsCard = '';
+    if (!isLast){
+      var next = STEPS[stepIndex+1];
+      var nav = navigatorFor(stepIndex);
+      var isMe = nav.key === state.character;
+      mapsCard = `<div class="card char char-${nav.key}">
+        <div class="eyebrow"><span class="dot"></span>À vous de naviguer 🧭</div>
+        <p>${isMe ? 'C’est ton tour' : 'C’est le tour de ' + nav.emoji + ' ' + nav.name} de guider le groupe avec Google Maps ! ${isMe ? 'Ouvre' : 'Passe-lui l’iPad pour qu’il ou elle ouvre'} l’appli, cherche le lieu, appuie sur <strong>Itinéraire</strong>, puis choisis le mode <strong>piéton 🚶</strong> pour trouver le chemin jusqu’à :</p>
+        <p class="prompt">📍 ${next.title}</p>
+        <a class="maps-link" href="${buildMapsUrl(next.mapsQuery)}" target="_blank" rel="noopener">🗺️ Ouvrir Google Maps</a>
+      </div>`;
+    }
     return `<div class="card"><div class="eyebrow"><span class="dot"></span>Le sais-tu ?</div><p>${step.funfact}</p></div>
-      ${mapsBtn}
+      ${mapsCard}
       <button class="btn btn-go btn-block" onclick="PG.nextStep()">${isLast ? '🏆 Voir le diplôme final' : '➡️ Étape suivante'}</button>`;
   }
 
@@ -591,9 +609,9 @@ button{font-family:inherit;}
             <li>👪 Un adulte qui aide sans donner les réponses</li>
           </ul>
         </div>
-        <a class="maps-link" href="${FULL_ROUTE_URL}" target="_blank" rel="noopener">🗺️ Voir tout le parcours sur Google Maps</a>
+        <a class="maps-link" href="${FULL_ROUTE_URL}" target="_blank" rel="noopener">🗺️ Aperçu du parcours complet (pour les parents)</a>
       </div>
-      <p class="footer-note">Chaque enquêteur choisit son propre profil, sur son propre iPad.</p>
+      <p class="footer-note">Chaque enquêteur choisit son propre profil, sur son propre iPad. À chaque étape, un enfant différent ouvrira lui-même Google Maps pour guider le groupe jusqu’au lieu suivant.</p>
     </div>`;
   }
 
@@ -660,9 +678,23 @@ button{font-family:inherit;}
       html = `<h2 class="disp">👪 Espace parent</h2>
         <p>${g2.intro}</p>
         ${perStepHtml}
-        <button class="btn btn-ghost btn-block" onclick="PG.changeChar()">Changer de profil sur cet iPad</button>`;
+        <button class="btn btn-ghost btn-block" onclick="PG.openModal('reset')">↺ Réinitialiser le jeu</button>`;
+    } else if (which === 'reset'){
+      var c3 = state.character ? CHARACTERS[state.character] : null;
+      html = `<h2 class="disp">↺ Réinitialiser le jeu</h2>
+        <p>${c3 ? 'Toute la progression de ' + c3.name + ' (missions validées, indices trouvés) sera effacée sur cet iPad, et vous reviendrez au choix du profil.' : 'Vous allez revenir au choix du profil.'}</p>
+        <div class="input-row">
+          <button class="btn btn-block" onclick="PG.closeModal()">Annuler</button>
+          <button class="btn btn-primary btn-block" onclick="PG.changeChar()">Oui, tout effacer</button>
+        </div>`;
+      html += '<!--noclose-->';
     }
-    html += `<button class="btn btn-block" style="margin-top:12px" onclick="PG.closeModal()">Fermer</button>`;
+    if (html.indexOf('<!--noclose-->') === -1){
+      html += `<button class="btn btn-block" style="margin-top:12px" onclick="PG.closeModal()">Fermer</button>`;
+    } else {
+      html = html.replace('<!--noclose-->','');
+    }
+    closeModal();
     var overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
     overlay.id = 'pg-modal';
