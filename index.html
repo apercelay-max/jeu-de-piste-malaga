@@ -83,8 +83,18 @@ button{font-family:inherit;}
 }
 .icon-btn:active{transform:translate(2px,2px); box-shadow:none;}
 
+.status-row{display:flex; gap:6px; padding:10px 16px 0; flex-wrap:wrap;}
+.status-chip{
+  display:flex; align-items:center; gap:5px; padding:6px 12px; border-radius:20px; font-family:inherit;
+  border:2px solid var(--line); background:var(--paper); color:var(--ink); font-size:.82rem; font-weight:600;
+  cursor:pointer; opacity:.6;
+}
+.status-chip.active{opacity:1; border-color:var(--char, var(--ink)); box-shadow:2px 2px 0 var(--shadow-hard);}
+.status-chip.done{background:var(--jazmin); color:var(--jazmin-ink); border-color:var(--jazmin); opacity:.85;}
+.status-chip.done.active{opacity:1; border-color:var(--ink);}
+
 .progress-track{height:10px; border-radius:6px; background:var(--line); border:2px solid var(--ink); overflow:hidden; margin:0 16px;}
-.progress-fill{height:100%; background:var(--char, var(--azulejo)); transition:width .4s ease;}
+.progress-fill{height:100%; background:var(--azulejo); transition:width .4s ease;}
 
 .badge-strip{display:flex; gap:6px; padding:10px 16px 0; flex-wrap:wrap;}
 .badge-piece{
@@ -232,7 +242,7 @@ button{font-family:inherit;}
 <script>
 (function(){
   "use strict";
-  var STORAGE_KEY = 'pepe-cenachero-hunt-v2';
+  var STORAGE_KEY = 'pepe-cenachero-hunt-v3';
 
   var CHARACTERS = {
     camille:  { key:'camille',  name:'Camille',  age:5,  emoji:'🦋', tagline:'La Petite Exploratrice' },
@@ -423,10 +433,17 @@ button{font-family:inherit;}
     ]
   };
 
-  function defaultState(){ return { character:null, stepIndex:0, missionDone:{}, teamDone:{}, attempts:{} }; }
+  function defaultState(){
+    var progress = {};
+    CHAR_ORDER.forEach(function(k){ progress[k] = { missionDone:{}, attempts:{} }; });
+    return { active:null, stepIndex:0, progress:progress, teamDone:{}, teamAttempts:{} };
+  }
   function loadState(){
-    try{ var s = JSON.parse(localStorage.getItem(STORAGE_KEY)); return s || defaultState(); }
-    catch(e){ return defaultState(); }
+    try{
+      var s = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (!s || !s.progress) return defaultState();
+      return s;
+    } catch(e){ return defaultState(); }
   }
   function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
   var state = loadState();
@@ -446,17 +463,17 @@ button{font-family:inherit;}
     </svg>`;
   }
 
-  function piecesForChar(){
+  function piecesFor(charKey){
     var pieces = [];
     for (var i=0;i<STEPS.length;i++){
-      var m = STEPS[i].missions[state.character];
-      if (state.missionDone[i] && m && m.piece) pieces.push(m.piece);
+      var m = STEPS[i].missions[charKey];
+      if (state.progress[charKey].missionDone[i] && m && m.piece) pieces.push(m.piece);
     }
     return pieces;
   }
 
   function badgeStripHtml(){
-    var pieces = piecesForChar();
+    var pieces = piecesFor(state.active);
     var html = '<div class="badge-strip">';
     for (var i=0;i<STEPS.length;i++){
       if (pieces[i]) html += `<div class="badge-piece" title="${pieces[i].label}">${pieces[i].emoji}</div>`;
@@ -465,11 +482,24 @@ button{font-family:inherit;}
     return html + '</div>';
   }
 
+  function allMissionsDone(stepIndex){
+    return CHAR_ORDER.every(function(k){ return !!state.progress[k].missionDone[stepIndex]; });
+  }
+
+  function statusRowHtml(stepIndex){
+    return '<div class="status-row">' + CHAR_ORDER.map(function(k){
+      var c = CHARACTERS[k];
+      var done = !!state.progress[k].missionDone[stepIndex];
+      var active = k === state.active;
+      return `<button class="status-chip char-${k}${done?' done':''}${active?' active':''}" onclick="PG.switchChar('${k}')">${c.emoji} ${c.name}${done?' ✓':''}</button>`;
+    }).join('') + '</div>';
+  }
+
   function topbarHtml(stepIndex){
-    var c = CHARACTERS[state.character];
+    var c = CHARACTERS[state.active];
     var stepLabel = stepIndex < STEPS.length ? ('Étape ' + (stepIndex+1) + '/' + STEPS.length) : 'Terminé !';
     var dist = STEPS[Math.min(stepIndex, STEPS.length-1)].distance;
-    return `<div class="topbar char-${state.character}">
+    return `<div class="topbar char-${state.active}">
       <div class="tile tile-char">${c.emoji} ${c.name} · ${c.age} ans</div>
       <div class="tile">${stepLabel}</div>
       <div class="tile">📍 ${dist}</div>
@@ -483,10 +513,12 @@ button{font-family:inherit;}
   function normalizeText(v){ return (v||'').toString().trim().toLowerCase(); }
 
   function missionSectionHtml(step, stepIndex){
-    var m = step.missions[state.character];
-    var done = !!state.missionDone[stepIndex];
-    var attempts = state.attempts[stepIndex] || 0;
-    var c = CHARACTERS[state.character];
+    var active = state.active;
+    var m = step.missions[active];
+    var prog = state.progress[active];
+    var done = !!prog.missionDone[stepIndex];
+    var attempts = prog.attempts[stepIndex] || 0;
+    var c = CHARACTERS[active];
     var body = '';
     if (done){
       body = `<div class="stamp">✔ Validé — ${m.piece.emoji} ${m.piece.label}</div><p>${m.success}</p>`;
@@ -513,20 +545,22 @@ button{font-family:inherit;}
         body += `<button class="btn btn-ghost" onclick="PG.revealMission(${stepIndex})">👉 Révéler la réponse</button>`;
       }
     }
-    return `<div class="card char char-${state.character}">
+    return `<div class="card char char-${active}">
       <div class="eyebrow"><span class="dot"></span>Mission de ${c.name}</div>
       ${body}
     </div>`;
   }
 
   function teamSectionHtml(step, stepIndex){
-    var missionDone = !!state.missionDone[stepIndex];
+    var allDone = allMissionsDone(stepIndex);
     var done = !!state.teamDone[stepIndex];
-    var attempts = state.attempts['t'+stepIndex] || 0;
+    var attempts = state.teamAttempts[stepIndex] || 0;
     var tr = step.teamRiddle;
-    if (!missionDone){
+    if (!allDone){
+      var left = CHAR_ORDER.filter(function(k){ return !state.progress[k].missionDone[stepIndex]; })
+        .map(function(k){ return CHARACTERS[k].name; }).join(', ');
       return `<div class="card"><div class="eyebrow"><span class="dot"></span>Énigme d’équipe 🤝</div>
-        <p class="hint">🔒 Termine d’abord ta mission pour débloquer l’énigme commune.</p></div>`;
+        <p class="hint">🔒 Il manque encore la mission de : ${left}. Passez-leur l’iPad (pastilles en haut) !</p></div>`;
     }
     var body = '';
     if (done){
@@ -566,12 +600,13 @@ button{font-family:inherit;}
     if (!isLast){
       var next = STEPS[stepIndex+1];
       var nav = navigatorFor(stepIndex);
-      var isMe = nav.key === state.character;
+      var isMe = nav.key === state.active;
       mapsCard = `<div class="card char char-${nav.key}">
         <div class="eyebrow"><span class="dot"></span>À vous de naviguer 🧭</div>
-        <p>${isMe ? 'C’est ton tour' : 'C’est le tour de ' + nav.emoji + ' ' + nav.name} de guider le groupe avec Google Maps ! ${isMe ? 'Ouvre' : 'Passe-lui l’iPad pour qu’il ou elle ouvre'} l’appli, cherche le lieu, appuie sur <strong>Itinéraire</strong>, puis choisis le mode <strong>piéton 🚶</strong> pour trouver le chemin jusqu’à :</p>
+        <p>${isMe ? 'C’est ton tour' : 'C’est le tour de ' + nav.emoji + ' ' + nav.name} de guider le groupe avec Google Maps ! ${isMe ? 'Ouvre' : 'Passe-lui l’iPad, puis ouvre'} l’appli, cherche le lieu, appuie sur <strong>Itinéraire</strong>, puis choisis le mode <strong>piéton 🚶</strong> pour trouver le chemin jusqu’à :</p>
         <p class="prompt">📍 ${next.title}</p>
         <a class="maps-link" href="${buildMapsUrl(next.mapsQuery)}" target="_blank" rel="noopener">🗺️ Ouvrir Google Maps</a>
+        ${isMe ? '' : `<button class="btn btn-ghost" onclick="PG.switchChar('${nav.key}')">↪ Passer sur le profil de ${nav.name}</button>`}
       </div>`;
     }
     return `<div class="card"><div class="eyebrow"><span class="dot"></span>Le sais-tu ?</div><p>${step.funfact}</p></div>
@@ -593,25 +628,25 @@ button{font-family:inherit;}
       <div class="hero">
         ${mascotSvg(84)}
         <h1 class="disp">Le Trésor de Pepe el Cenachero</h1>
-        <p>Un jeu de piste dans les ruelles de Málaga. Chacun sa mission : il faut s’entraider pour avancer !</p>
+        <p>Un seul iPad, que l’on se passe entre enquêteurs. Chacun sa mission : il faut s’entraider pour avancer !</p>
       </div>
       <div class="screen">
         <div class="card">
-          <div class="eyebrow"><span class="dot"></span>Qui es-tu ?</div>
+          <div class="eyebrow"><span class="dot"></span>Qui commence ?</div>
           <div class="char-grid">${picks}</div>
         </div>
         <div class="card">
           <div class="eyebrow"><span class="dot"></span>Avant de partir</div>
           <ul class="kit-list">
-            <li>🎒 De l’eau et une casquette pour chacun</li>
+            <li>📱 Un seul iPad pour toute la famille, que l’on se passe à chaque mission</li>
+            <li>👪 Papa gère le passage d’un profil à l’autre (pastilles en haut de l’écran, ou icône ↺)</li>
             <li>🔍 Une loupe, un mètre ruban, une boussole (ou juste vos yeux !)</li>
             <li>🚶 3,2 km de balade tranquille, environ 2h30 avec la pause goûter</li>
-            <li>👪 Un adulte qui aide sans donner les réponses</li>
           </ul>
         </div>
         <a class="maps-link" href="${FULL_ROUTE_URL}" target="_blank" rel="noopener">🗺️ Aperçu du parcours complet (pour les parents)</a>
       </div>
-      <p class="footer-note">Chaque enquêteur choisit son propre profil, sur son propre iPad. À chaque étape, un enfant différent ouvrira lui-même Google Maps pour guider le groupe jusqu’au lieu suivant.</p>
+      <p class="footer-note">À chaque étape, les 4 enfants font chacun leur mission à tour de rôle sur le même iPad — les pastilles en haut indiquent qui a déjà joué. Puis un enfant différent ouvre Google Maps pour guider le groupe.</p>
     </div>`;
   }
 
@@ -620,7 +655,8 @@ button{font-family:inherit;}
     var step = STEPS[stepIndex];
     app.innerHTML = `<div class="app-shell">
       ${topbarHtml(stepIndex)}
-      <div class="progress-track"><div class="progress-fill char-${state.character}" style="width:${Math.round(stepIndex/STEPS.length*100)}%"></div></div>
+      ${statusRowHtml(stepIndex)}
+      <div class="progress-track"><div class="progress-fill" style="width:${Math.round(stepIndex/STEPS.length*100)}%"></div></div>
       ${badgeStripHtml()}
       <div class="screen">
         <div class="mascot-row">
@@ -628,7 +664,7 @@ button{font-family:inherit;}
           <div class="mascot-bubble">
             <p class="mascot-name">Pepe raconte…</p>
             <p>${step.story}</p>
-            ${(state.character==='leopold' && step.extra) ? `<div class="extra-fact">🧠 Pour les grands curieux : ${step.extra}</div>` : ''}
+            ${(state.active==='leopold' && step.extra) ? `<div class="extra-fact">🧠 Pour les grands curieux : ${step.extra}</div>` : ''}
           </div>
         </div>
         ${missionSectionHtml(step, stepIndex)}
@@ -639,22 +675,27 @@ button{font-family:inherit;}
   }
 
   function renderFinal(){
-    var c = CHARACTERS[state.character];
-    var pieces = piecesForChar();
-    var piecesHtml = pieces.map(function(p){ return `<div class="badge-piece" title="${p.label}">${p.emoji}</div>`; }).join('');
+    var rows = CHAR_ORDER.map(function(k){
+      var c = CHARACTERS[k];
+      var pieces = piecesFor(k);
+      var piecesHtml = pieces.map(function(p){ return `<div class="badge-piece" title="${p.label}">${p.emoji}</div>`; }).join('');
+      return `<div class="card char char-${k}">
+        <div class="eyebrow"><span class="dot"></span>${c.emoji} ${c.name} · ${c.age} ans</div>
+        <div class="pieces-final" style="justify-content:flex-start; margin:0;">${piecesHtml}</div>
+      </div>`;
+    }).join('');
     app.innerHTML = `<div class="app-shell">
       ${topbarHtml(STEPS.length)}
       <div class="screen">
         <div class="diploma">
           <div class="seal">🏅</div>
-          <h2 class="disp">Diplôme du Vrai Malagueño</h2>
-          <p>Décerné à</p>
-          <h3 class="disp char-${state.character}" style="color:var(--char)">${c.emoji} ${c.name}</h3>
-          <p>Pour avoir percé, avec courage et curiosité, les secrets cachés de Málaga.</p>
-          <div class="pieces-final">${piecesHtml}</div>
-          <p><strong>« Muy Hospitalaria »</strong><br>— le titre que Málaga porte depuis 1900, en mémoire du sauvetage du Gneisenau.</p>
+          <h2 class="disp">Diplôme des Vrais Malagueños</h2>
+          <p>Décerné à toute l’équipe :</p>
+          <h3 class="disp">${CHAR_ORDER.map(function(k){ return CHARACTERS[k].name; }).join(' · ')}</h3>
+          <p>Pour avoir percé, ensemble, les secrets cachés de Málaga.</p>
         </div>
-        <div class="card"><p>La vraie richesse de Málaga n’est pas dans un coffre au trésor, mais dans son histoire et l’hospitalité de ses habitants. ¡Enhorabuena, enquêteurs !</p></div>
+        ${rows}
+        <div class="card"><p><strong>« Muy Hospitalaria »</strong> — le titre que Málaga porte depuis 1900, en mémoire du sauvetage du Gneisenau. La vraie richesse de Málaga n’est pas dans un coffre au trésor, mais dans son histoire et l’hospitalité de ses habitants. ¡Enhorabuena, enquêteurs !</p></div>
         <button class="btn btn-ghost btn-block" onclick="PG.resetGame()">↺ Recommencer l’aventure</button>
       </div>
     </div>`;
@@ -676,16 +717,15 @@ button{font-family:inherit;}
         return `<div class="guide-step"><h3>Étape ${i+1} — ${STEPS[i].title}</h3><p>${txt}</p></div>`;
       }).join('');
       html = `<h2 class="disp">👪 Espace parent</h2>
-        <p>${g2.intro}</p>
+        <p>${g2.intro} C’est vous qui gérez le passage de l’iPad d’un enfant à l’autre — via les pastilles en haut de l’écran, ou en rouvrant ce menu.</p>
         ${perStepHtml}
         <button class="btn btn-ghost btn-block" onclick="PG.openModal('reset')">↺ Réinitialiser le jeu</button>`;
     } else if (which === 'reset'){
-      var c3 = state.character ? CHARACTERS[state.character] : null;
       html = `<h2 class="disp">↺ Réinitialiser le jeu</h2>
-        <p>${c3 ? 'Toute la progression de ' + c3.name + ' (missions validées, indices trouvés) sera effacée sur cet iPad, et vous reviendrez au choix du profil.' : 'Vous allez revenir au choix du profil.'}</p>
+        <p>Toute la progression des 4 enfants (missions validées, indices trouvés, étape en cours) sera effacée, et vous reviendrez au choix du premier profil.</p>
         <div class="input-row">
           <button class="btn btn-block" onclick="PG.closeModal()">Annuler</button>
-          <button class="btn btn-primary btn-block" onclick="PG.changeChar()">Oui, tout effacer</button>
+          <button class="btn btn-primary btn-block" onclick="PG.confirmReset()">Oui, tout effacer</button>
         </div>`;
       html += '<!--noclose-->';
     }
@@ -724,30 +764,31 @@ button{font-family:inherit;}
     setTimeout(function(){ layer.remove(); }, 3200);
   }
 
-  function markMissionDone(stepIndex){ state.missionDone[stepIndex] = true; saveState(); burstConfetti(); render(); }
-  function markMissionWrong(stepIndex){ state.attempts[stepIndex] = (state.attempts[stepIndex]||0) + 1; saveState(); render(); }
+  function markMissionDone(charKey, stepIndex){ state.progress[charKey].missionDone[stepIndex] = true; saveState(); burstConfetti(); render(); }
+  function markMissionWrong(charKey, stepIndex){ var p = state.progress[charKey]; p.attempts[stepIndex] = (p.attempts[stepIndex]||0) + 1; saveState(); render(); }
   function markTeamDone(stepIndex){ state.teamDone[stepIndex] = true; saveState(); burstConfetti(); render(); }
-  function markTeamWrong(stepIndex){ state.attempts['t'+stepIndex] = (state.attempts['t'+stepIndex]||0) + 1; saveState(); render(); }
+  function markTeamWrong(stepIndex){ state.teamAttempts[stepIndex] = (state.teamAttempts[stepIndex]||0) + 1; saveState(); render(); }
 
   var PG = {
-    selectChar:function(key){ state.character = key; saveState(); render(); },
-    changeChar:function(){ closeModal(); state = defaultState(); saveState(); render(); },
+    selectChar:function(key){ state.active = key; saveState(); render(); },
+    switchChar:function(key){ state.active = key; saveState(); render(); },
+    confirmReset:function(){ closeModal(); state = defaultState(); saveState(); render(); },
     resetGame:function(){ state = defaultState(); saveState(); render(); },
     openModal:openModal,
     closeModal:closeModal,
     answerChoice:function(stepIndex, idx){
-      var m = STEPS[stepIndex].missions[state.character];
-      if (idx === m.answer) markMissionDone(stepIndex); else markMissionWrong(stepIndex);
+      var m = STEPS[stepIndex].missions[state.active];
+      if (idx === m.answer) markMissionDone(state.active, stepIndex); else markMissionWrong(state.active, stepIndex);
     },
     answerField:function(stepIndex){
-      var m = STEPS[stepIndex].missions[state.character];
+      var m = STEPS[stepIndex].missions[state.active];
       var input = document.getElementById('mission-input-'+stepIndex);
       var raw = input ? input.value : '';
       var ok = m.type === 'number' ? (parseInt(raw,10) === m.answer) : (normalizeText(raw) === normalizeText(m.answer));
-      if (ok) markMissionDone(stepIndex); else markMissionWrong(stepIndex);
+      if (ok) markMissionDone(state.active, stepIndex); else markMissionWrong(state.active, stepIndex);
     },
-    answerConfirm:function(stepIndex){ markMissionDone(stepIndex); },
-    revealMission:function(stepIndex){ markMissionDone(stepIndex); },
+    answerConfirm:function(stepIndex){ markMissionDone(state.active, stepIndex); },
+    revealMission:function(stepIndex){ markMissionDone(state.active, stepIndex); },
     teamChoice:function(idx){
       var tr = STEPS[state.stepIndex].teamRiddle;
       if (idx === tr.answer) markTeamDone(state.stepIndex); else markTeamWrong(state.stepIndex);
@@ -766,7 +807,7 @@ button{font-family:inherit;}
   window.PG = PG;
 
   function render(){
-    if (!state.character){ renderWelcome(); return; }
+    if (!state.active){ renderWelcome(); return; }
     if (state.stepIndex >= STEPS.length){ renderFinal(); return; }
     renderStep();
   }
