@@ -107,17 +107,27 @@ button{font-family:inherit;}
 /* ---- content ---- */
 .screen{padding:18px 16px 8px; display:flex; flex-direction:column; gap:18px;}
 
-.mascot-row{display:flex; gap:12px; align-items:flex-start;}
+.mascot-row{display:flex; gap:10px; align-items:flex-start;}
 .mascot-face{flex:none;}
+.pepe-bob{transform-origin:60px 110px; animation:pepeBob 3.4s ease-in-out infinite;}
+@keyframes pepeBob{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-3px) rotate(-1.2deg);}}
+.pepe-eyes{transform-origin:60px 65px; animation:pepeBlink 5.5s ease-in-out infinite;}
+@keyframes pepeBlink{0%,88%,100%{transform:scaleY(1);}92%{transform:scaleY(.12);}}
+.pepe-mouth{animation:pepeTalk 2.4s ease-in-out infinite;}
+@keyframes pepeTalk{0%,100%{d:path("M47 90 Q60 98 73 90");}50%{d:path("M49 91 Q60 93 71 91");}}
 .mascot-bubble{
-  position:relative; background:var(--paper); border:2px solid var(--line); border-radius:14px;
-  padding:14px 16px; box-shadow:0 3px 0 var(--shadow-soft);
+  position:relative; background:var(--paper); border:2.5px solid var(--ink); border-radius:18px 18px 18px 4px;
+  padding:14px 16px; box-shadow:3px 3px 0 var(--shadow-hard);
   background-image:repeating-linear-gradient(var(--paper) 0 27px, var(--line) 27px 28px);
   background-position:0 10px;
+  animation:bubblePop .4s cubic-bezier(.34,1.56,.64,1);
+  transform-origin:12px 100%;
 }
+@keyframes bubblePop{from{transform:scale(.8); opacity:0;}to{transform:scale(1); opacity:1;}}
 .mascot-bubble::before{
-  content:""; position:absolute; left:-9px; top:18px; width:0; height:0;
-  border-top:8px solid transparent; border-bottom:8px solid transparent; border-right:9px solid var(--line);
+  content:""; position:absolute; left:-10px; top:38px; width:16px; height:16px;
+  background:var(--paper); border-left:2.5px solid var(--ink); border-bottom:2.5px solid var(--ink);
+  clip-path:polygon(100% 0, 100% 100%, 0 100%); transform:rotate(3deg);
 }
 .mascot-bubble p{margin:0 0 8px; max-width:58ch;}
 .mascot-bubble p:last-child{margin-bottom:0;}
@@ -245,10 +255,10 @@ button{font-family:inherit;}
   var STORAGE_KEY = 'pepe-cenachero-hunt-v3';
 
   var CHARACTERS = {
-    camille:  { key:'camille',  name:'Camille',  age:5,  emoji:'🦋', tagline:'La Petite Exploratrice' },
-    maeva:    { key:'maeva',    name:'Maeva',    age:8,  emoji:'🌻', tagline:'L’Observatrice' },
-    madeline: { key:'madeline', name:'Madeline', age:9,  emoji:'🔍', tagline:'L’Enquêtrice en Chef' },
-    leopold:  { key:'leopold',  name:'Léopold',  age:12, emoji:'🧭', tagline:'Le Grand Déducteur' }
+    camille:  { key:'camille',  name:'Camille',  age:5,  emoji:'🦋', tagline:'La Chasseuse de Couleurs' },
+    maeva:    { key:'maeva',    name:'Maeva',    age:8,  emoji:'🌻', tagline:'La Guetteuse' },
+    madeline: { key:'madeline', name:'Madeline', age:9,  emoji:'🔍', tagline:'L’Enquêtrice' },
+    leopold:  { key:'leopold',  name:'Léopold',  age:12, emoji:'🧭', tagline:'Le Décrypteur' }
   };
   var CHAR_ORDER = ['camille','maeva','madeline','leopold'];
 
@@ -287,7 +297,7 @@ button{font-family:inherit;}
           success:"Parfait ! 17 et 6 donnent le nombre-pivot 11.", hint:"1+8+6+2 = 17. Puis 17 − 6 = ?",
           piece:{emoji:"🔢",label:"Nombre 11"}}
       },
-      teamRiddle:{prompt:"Demandez à votre grand enquêteur (12 ans) : quel est le nombre-pivot qu’il a trouvé ? Il ouvre la direction à suivre !", type:"number", answer:11,
+      teamRiddle:{prompt:"Demandez à Léopold, le Décrypteur : quel est le nombre-pivot qu’il a trouvé ? Il ouvre la direction à suivre !", type:"number", answer:11,
         success:"Le nombre 11 ouvre la route vers le NORD, direction la grande avenue commerçante !"},
       funfact:"Un conteur triste incapable de trouver une seule raison d’être triste ici : voilà le vrai miracle andalou !"
     },
@@ -347,7 +357,7 @@ button{font-family:inherit;}
       extra:null,
       missions:{
         camille:{prompt:"Les cinq boules de pierre sur la tour sont rangées en forme de quoi ?", type:"choice", options:["Un cœur ❤️","Une flèche ➡️","Une étoile ⭐"], answer:1,
-          success:"Une flèche ! Bien vu, petite exploratrice.", hint:"Elles pointent toutes dans la même direction, comme une flèche…",
+          success:"Une flèche ! Bien vu, Camille.", hint:"Elles pointent toutes dans la même direction, comme une flèche…",
           piece:{emoji:"➡️",label:"La Flèche"}},
         maeva:{prompt:"Compte les boules de pierre sur la tour : combien en vois-tu ?", type:"number", answer:5,
           success:"Cinq boules exactement !", hint:"Compte-les une par une avec ton doigt…",
@@ -359,7 +369,7 @@ button{font-family:inherit;}
           success:"1680 − 1487 = 193, puis 193 − 50 = 143 mètres !", hint:"1680 − 1487 = 193. Puis 5×10 = 50. Enfin 193 − 50 = ?",
           piece:{emoji:"🔟",label:"143 mètres"}}
       },
-      teamRiddle:{prompt:"Quelle distance en mètres sépare cette tour du prochain arrêt gourmand ? (Demandez à votre grand enquêteur !)", type:"number", answer:143,
+      teamRiddle:{prompt:"Quelle distance en mètres sépare cette tour du prochain arrêt gourmand ? (Demandez à Léopold, le Décrypteur !)", type:"number", answer:143,
         success:"143 mètres ! Direction le marché, votre ventre va être content."},
       funfact:"Cinq boules, un mystère jamais résolu : même les historiens ne sont pas d’accord !"
     }
@@ -452,14 +462,56 @@ button{font-family:inherit;}
 
   function mascotSvg(size){
     size = size || 64;
-    return `<svg width="${size}" height="${size}" viewBox="0 0 120 120" role="img" aria-label="Pepe el Cenachero">
-      <circle cx="60" cy="68" r="38" fill="#E7B583"/>
-      <path d="M14 52 Q60 2 106 52 Q60 34 14 52Z" style="fill:var(--albero)"/>
-      <rect x="10" y="46" width="100" height="11" rx="5.5" style="fill:var(--albero)"/>
-      <circle cx="47" cy="70" r="4.2" style="fill:var(--ink)"/>
-      <circle cx="75" cy="70" r="4.2" style="fill:var(--ink)"/>
-      <path d="M40 86 Q60 98 82 86" style="stroke:var(--ink)" stroke-width="4" fill="none" stroke-linecap="round"/>
-      <path d="M34 82 Q47 74 41 84 Q52 78 60 84 Q68 78 81 84 Q75 74 88 82" style="stroke:var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    return `<svg width="${size}" height="${size*1.12}" viewBox="0 0 120 134" role="img" aria-label="Pepe el Cenachero, personnage andalou">
+      <ellipse class="pepe-shadow" cx="60" cy="128" rx="34" ry="5" fill="#000" opacity=".18"/>
+      <g class="pepe-bob">
+        <!-- chemise et bretelles -->
+        <path d="M16 134 Q16 94 60 94 Q104 94 104 134 Z" fill="#F5EFE1"/>
+        <path d="M45 98 L36 134" stroke="#8a4a2f" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M75 98 L84 134" stroke="#8a4a2f" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <!-- foulard à pois -->
+        <path d="M40 91 Q60 110 80 91 Q60 101 40 91Z" style="fill:var(--buganvilla)"/>
+        <circle cx="50" cy="96" r="1.8" fill="#fff" opacity=".85"/>
+        <circle cx="60" cy="102" r="1.8" fill="#fff" opacity=".85"/>
+        <circle cx="70" cy="96" r="1.8" fill="#fff" opacity=".85"/>
+        <!-- petit cenacho (panier) avec un poisson -->
+        <path d="M82 106 Q81 118 91 121 Q101 118 100 106" fill="none" stroke="#B98A4A" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M83.5 111 L99.5 111 M85 116 L98 116" stroke="#B98A4A" stroke-width="1.6"/>
+        <g transform="translate(91 104) rotate(-12)">
+          <ellipse cx="0" cy="0" rx="8" ry="4.2" style="fill:var(--azulejo)"/>
+          <path d="M7 0 L12 -3.5 L12 3.5Z" style="fill:var(--azulejo)"/>
+          <circle cx="-4" cy="-0.5" r=".9" fill="#0a2530"/>
+        </g>
+        <!-- oreilles -->
+        <ellipse cx="25" cy="68" rx="6" ry="8" fill="#E7B583"/>
+        <ellipse cx="95" cy="68" rx="6" ry="8" fill="#E7B583"/>
+        <!-- tête -->
+        <circle cx="60" cy="64" r="38" fill="#E7B583"/>
+        <!-- pattes / favoris -->
+        <path d="M23 52 Q18 64 24 73" stroke="#3A2A1A" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M97 52 Q102 64 96 73" stroke="#3A2A1A" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <!-- joues roses -->
+        <circle cx="36" cy="78" r="7" fill="#E2647A" opacity=".32"/>
+        <circle cx="84" cy="78" r="7" fill="#E2647A" opacity=".32"/>
+        <!-- sourcils -->
+        <path d="M39 55 Q46 49 53 54" stroke="#3A2A1A" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+        <path d="M67 54 Q74 49 81 55" stroke="#3A2A1A" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+        <!-- yeux (clignent) -->
+        <g class="pepe-eyes">
+          <circle cx="47" cy="65" r="4.6" fill="#2B2018"/>
+          <circle cx="73" cy="65" r="4.6" fill="#2B2018"/>
+          <circle cx="45.3" cy="63.3" r="1.4" fill="#fff"/>
+          <circle cx="71.3" cy="63.3" r="1.4" fill="#fff"/>
+        </g>
+        <!-- moustache bien fournie -->
+        <path d="M30 81 Q41 72 48 80 Q54 75 60 80 Q66 75 72 80 Q79 72 90 81 Q80 89 60 85 Q40 89 30 81Z" fill="#3A2A1A"/>
+        <!-- bouche -->
+        <path class="pepe-mouth" d="M47 90 Q60 98 73 90" stroke="#8a4a2f" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- chapeau de paille à large bord -->
+        <ellipse cx="60" cy="44" rx="47" ry="11" style="fill:var(--albero)"/>
+        <path d="M27 44 Q29 6 60 6 Q91 6 93 44 Q60 31 27 44Z" style="fill:var(--albero)"/>
+        <path d="M29 38 Q60 27 91 38" fill="none" style="stroke:var(--buganvilla)" stroke-width="5" stroke-linecap="round"/>
+      </g>
     </svg>`;
   }
 
@@ -626,7 +678,7 @@ button{font-family:inherit;}
     }).join('');
     app.innerHTML = `<div class="app-shell">
       <div class="hero">
-        ${mascotSvg(84)}
+        ${mascotSvg(112)}
         <h1 class="disp">Le Trésor de Pepe el Cenachero</h1>
         <p>Un seul iPad, que l’on se passe entre enquêteurs. Chacun sa mission : il faut s’entraider pour avancer !</p>
       </div>
@@ -639,7 +691,7 @@ button{font-family:inherit;}
           <div class="eyebrow"><span class="dot"></span>Avant de partir</div>
           <ul class="kit-list">
             <li>📱 Un seul iPad pour toute la famille, que l’on se passe à chaque mission</li>
-            <li>👪 Papa gère le passage d’un profil à l’autre (pastilles en haut de l’écran, ou icône ↺)</li>
+            <li>👪 Papa gère le passage d’un profil à l’autre grâce aux pastilles en haut de l’écran</li>
             <li>🔍 Une loupe, un mètre ruban, une boussole (ou juste vos yeux !)</li>
             <li>🚶 3,2 km de balade tranquille, environ 2h30 avec la pause goûter</li>
           </ul>
@@ -660,16 +712,17 @@ button{font-family:inherit;}
       ${badgeStripHtml()}
       <div class="screen">
         <div class="mascot-row">
-          <div class="mascot-face">${mascotSvg(56)}</div>
+          <div class="mascot-face">${mascotSvg(68)}</div>
           <div class="mascot-bubble">
             <p class="mascot-name">Pepe raconte…</p>
             <p>${step.story}</p>
-            ${(state.active==='leopold' && step.extra) ? `<div class="extra-fact">🧠 Pour les grands curieux : ${step.extra}</div>` : ''}
+            ${(state.active==='leopold' && step.extra) ? `<div class="extra-fact">🧠 Anecdote bonus : ${step.extra}</div>` : ''}
           </div>
         </div>
         ${missionSectionHtml(step, stepIndex)}
         ${teamSectionHtml(step, stepIndex)}
         ${footerSectionHtml(step, stepIndex)}
+        <button class="btn btn-ghost btn-block" onclick="PG.openModal('reset')">↺ Réinitialiser le jeu</button>
       </div>
     </div>`;
   }
