@@ -1,0 +1,734 @@
+<title>Le Trésor de Pepe el Cenachero</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bevan&family=Rubik:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap">
+<style>
+:root{
+  --cal:#EFF2EE; --paper:#FBFAF5; --ink:#1E2523; --ink-soft:#5B6663; --line:#D8DED6;
+  --azulejo:#1C6E8C; --azulejo-ink:#FFFFFF;
+  --albero:#C97A2B; --albero-ink:#FFFFFF;
+  --buganvilla:#C23B6C; --buganvilla-ink:#FFFFFF;
+  --jazmin:#5D7C48; --jazmin-ink:#FFFFFF;
+  --sol:#C98A0E; --sol-ink:#FFFFFF;
+  --danger:#B23B26; --danger-ink:#FFFFFF;
+  --shadow-hard: rgba(30,37,35,0.85); --shadow-soft: rgba(30,37,35,0.14);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --cal:#141B19; --paper:#1D2523; --ink:#EDF2EF; --ink-soft:#AEB9B5; --line:#334039;
+    --azulejo:#5FC1E8; --azulejo-ink:#0A2530;
+    --albero:#F2A857; --albero-ink:#2B1B08;
+    --buganvilla:#EA7FAE; --buganvilla-ink:#3A0E1E;
+    --jazmin:#A9C98C; --jazmin-ink:#16210E;
+    --sol:#F0C246; --sol-ink:#2B1B08;
+    --danger:#E8695F; --danger-ink:#2B0805;
+    --shadow-hard: rgba(0,0,0,0.85); --shadow-soft: rgba(0,0,0,0.35);
+  }
+}
+:root[data-theme="dark"]{
+  --cal:#141B19; --paper:#1D2523; --ink:#EDF2EF; --ink-soft:#AEB9B5; --line:#334039;
+  --azulejo:#5FC1E8; --azulejo-ink:#0A2530;
+  --albero:#F2A857; --albero-ink:#2B1B08;
+  --buganvilla:#EA7FAE; --buganvilla-ink:#3A0E1E;
+  --jazmin:#A9C98C; --jazmin-ink:#16210E;
+  --sol:#F0C246; --sol-ink:#2B1B08;
+  --danger:#E8695F; --danger-ink:#2B0805;
+  --shadow-hard: rgba(0,0,0,0.85); --shadow-soft: rgba(0,0,0,0.35);
+}
+.char-camille{--char:var(--buganvilla);--char-ink:var(--buganvilla-ink);}
+.char-maeva{--char:var(--sol);--char-ink:var(--sol-ink);}
+.char-madeline{--char:var(--azulejo);--char-ink:var(--azulejo-ink);}
+.char-leopold{--char:var(--albero);--char-ink:var(--albero-ink);}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--cal); color:var(--ink);
+  font-family:'Rubik',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  -webkit-font-smoothing:antialiased; line-height:1.45;
+  min-height:100vh;
+}
+h1,h2,h3,.disp{font-family:'Bevan',Georgia,'Times New Roman',serif; font-weight:400; text-wrap:balance; letter-spacing:.2px;}
+.mono{font-family:'Space Mono','SFMono-Regular',Consolas,monospace;}
+button{font-family:inherit;}
+:focus-visible{outline:3px solid var(--azulejo); outline-offset:2px;}
+@media (prefers-reduced-motion:reduce){ *{animation-duration:.01ms !important; transition-duration:.01ms !important;} }
+
+.app-shell{max-width:640px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; padding:0 0 48px;}
+
+/* ---- tile badge chrome ---- */
+.tile{
+  border:3px solid var(--ink); border-radius:6px; background:var(--paper);
+  box-shadow:3px 3px 0 var(--shadow-hard);
+  font-family:'Space Mono',monospace; font-weight:700; text-transform:uppercase; letter-spacing:.06em;
+}
+.topbar{
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  padding:14px 16px 10px; position:sticky; top:0; z-index:5;
+  background:var(--cal); border-bottom:1px solid var(--line);
+}
+.topbar .tile{padding:6px 10px; font-size:.72rem; display:flex; align-items:center; gap:6px;}
+.tile-char{background:var(--char); color:var(--char-ink); border-color:var(--ink);}
+.topbar .spacer{flex:1;}
+.icon-btn{
+  border:3px solid var(--ink); border-radius:6px; background:var(--paper); color:var(--ink);
+  box-shadow:2px 2px 0 var(--shadow-hard); width:40px; height:40px; font-size:1.1rem;
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+}
+.icon-btn:active{transform:translate(2px,2px); box-shadow:none;}
+
+.progress-track{height:10px; border-radius:6px; background:var(--line); border:2px solid var(--ink); overflow:hidden; margin:0 16px;}
+.progress-fill{height:100%; background:var(--char, var(--azulejo)); transition:width .4s ease;}
+
+.badge-strip{display:flex; gap:6px; padding:10px 16px 0; flex-wrap:wrap;}
+.badge-piece{
+  width:38px; height:38px; border-radius:50%; border:2.5px solid var(--ink); background:var(--paper);
+  display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+  box-shadow:2px 2px 0 var(--shadow-hard);
+}
+.badge-piece.empty{opacity:.25; border-style:dashed; box-shadow:none;}
+
+/* ---- content ---- */
+.screen{padding:18px 16px 8px; display:flex; flex-direction:column; gap:18px;}
+
+.mascot-row{display:flex; gap:12px; align-items:flex-start;}
+.mascot-face{flex:none;}
+.mascot-bubble{
+  position:relative; background:var(--paper); border:2px solid var(--line); border-radius:14px;
+  padding:14px 16px; box-shadow:0 3px 0 var(--shadow-soft);
+  background-image:repeating-linear-gradient(var(--paper) 0 27px, var(--line) 27px 28px);
+  background-position:0 10px;
+}
+.mascot-bubble::before{
+  content:""; position:absolute; left:-9px; top:18px; width:0; height:0;
+  border-top:8px solid transparent; border-bottom:8px solid transparent; border-right:9px solid var(--line);
+}
+.mascot-bubble p{margin:0 0 8px; max-width:58ch;}
+.mascot-bubble p:last-child{margin-bottom:0;}
+.mascot-name{font-family:'Bevan',serif; color:var(--albero); font-size:.95rem; margin:0 0 4px;}
+.extra-fact{
+  margin-top:10px; padding-top:8px; border-top:1px dashed var(--line); font-size:.88rem; color:var(--ink-soft);
+}
+
+.card{
+  background:var(--paper); border:2px solid var(--line); border-radius:14px; padding:16px;
+  box-shadow:0 3px 0 var(--shadow-soft); display:flex; flex-direction:column; gap:12px;
+}
+.card.char{border-color:var(--char); border-width:2.5px;}
+.eyebrow{
+  display:flex; align-items:center; gap:8px; font-family:'Space Mono',monospace; font-size:.72rem;
+  text-transform:uppercase; letter-spacing:.08em; color:var(--char, var(--ink-soft)); font-weight:700;
+}
+.eyebrow .dot{width:8px; height:8px; border-radius:50%; background:var(--char, var(--azulejo));}
+.prompt{font-size:1.12rem; font-weight:600; margin:0;}
+
+.choice-grid{display:grid; gap:10px;}
+.choice-btn{
+  text-align:left; padding:12px 14px; border-radius:10px; border:2.5px solid var(--ink); background:var(--cal);
+  font-size:1rem; font-weight:500; cursor:pointer; color:var(--ink); box-shadow:2px 2px 0 var(--shadow-hard);
+}
+.choice-btn:active{transform:translate(2px,2px); box-shadow:none;}
+.choice-btn.correct{background:var(--jazmin); color:var(--jazmin-ink); border-color:var(--jazmin);}
+.choice-btn.wrong{background:var(--danger); color:var(--danger-ink); border-color:var(--danger); animation:shake .35s;}
+.choice-btn:disabled{cursor:default;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
+
+.input-row{display:flex; gap:10px; flex-wrap:wrap;}
+.field{
+  flex:1; min-width:140px; padding:12px 14px; border-radius:10px; border:2.5px solid var(--ink);
+  background:var(--cal); color:var(--ink); font-size:1.15rem; font-family:'Space Mono',monospace;
+}
+.btn{
+  border:3px solid var(--ink); border-radius:10px; padding:12px 20px; font-weight:700; font-size:1rem;
+  cursor:pointer; box-shadow:3px 3px 0 var(--shadow-hard); background:var(--paper); color:var(--ink);
+}
+.btn:active{transform:translate(3px,3px); box-shadow:none;}
+.btn-primary{background:var(--azulejo); color:var(--azulejo-ink); border-color:var(--ink);}
+.btn-go{background:var(--jazmin); color:var(--jazmin-ink);}
+.btn-block{width:100%;}
+.btn:disabled{opacity:.4; cursor:not-allowed;}
+.btn-ghost{background:transparent; box-shadow:none; border-style:dashed; font-size:.85rem; padding:8px 14px;}
+
+.feedback{border-radius:10px; padding:12px 14px; font-weight:600;}
+.feedback.ok{background:var(--jazmin); color:var(--jazmin-ink);}
+.feedback.no{background:var(--danger); color:var(--danger-ink);}
+.hint{font-size:.9rem; color:var(--ink-soft); font-style:italic; margin:0;}
+
+.stamp{
+  display:inline-flex; align-items:center; gap:8px; padding:8px 14px; border:3px solid var(--jazmin);
+  color:var(--jazmin); border-radius:8px; font-family:'Space Mono',monospace; text-transform:uppercase;
+  font-weight:700; letter-spacing:.05em; transform:rotate(-4deg); animation:stampIn .3s ease-out;
+}
+@keyframes stampIn{from{transform:rotate(-4deg) scale(2); opacity:0;} to{transform:rotate(-4deg) scale(1); opacity:1;}}
+
+.maps-link{
+  display:flex; align-items:center; justify-content:center; gap:10px; text-decoration:none;
+  background:var(--azulejo); color:var(--azulejo-ink); border:3px solid var(--ink); border-radius:12px;
+  padding:16px; font-weight:700; font-size:1.05rem; box-shadow:3px 3px 0 var(--shadow-hard);
+}
+.maps-link:active{transform:translate(3px,3px); box-shadow:none;}
+
+.char-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+@media (max-width:420px){.char-grid{grid-template-columns:1fr;}}
+.char-card{
+  border:3px solid var(--ink); border-radius:14px; padding:16px; background:var(--paper); cursor:pointer;
+  box-shadow:3px 3px 0 var(--shadow-hard); text-align:center; display:flex; flex-direction:column; gap:6px; align-items:center;
+}
+.char-card:active{transform:translate(3px,3px); box-shadow:none;}
+.char-card .avatar{
+  width:56px; height:56px; border-radius:50%; background:var(--char); color:var(--char-ink);
+  display:flex; align-items:center; justify-content:center; font-size:1.8rem; border:2px solid var(--ink);
+}
+.char-card .cname{font-family:'Bevan',serif; font-size:1.15rem;}
+.char-card .cage{font-family:'Space Mono',monospace; font-size:.78rem; color:var(--ink-soft);}
+.char-card .ctag{font-size:.82rem; color:var(--char);}
+
+.hero{text-align:center; padding:28px 16px 6px;}
+.hero h1{font-size:2rem; margin:6px 0 4px; color:var(--albero);}
+.hero p{color:var(--ink-soft); max-width:44ch; margin:0 auto;}
+
+.kit-list{display:flex; flex-direction:column; gap:8px; margin:0; padding:0; list-style:none;}
+.kit-list li{display:flex; gap:10px; align-items:flex-start; font-size:.95rem;}
+
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(20,27,25,.55); display:flex; align-items:flex-end;
+  justify-content:center; z-index:20; padding:0;
+}
+@media (min-width:640px){.modal-overlay{align-items:center;}}
+.modal{
+  background:var(--paper); border-radius:18px 18px 0 0; border:3px solid var(--ink); border-bottom:none;
+  max-width:560px; width:100%; max-height:82vh; overflow-y:auto; padding:20px 18px 26px;
+  box-shadow:0 -4px 0 var(--shadow-hard);
+}
+@media (min-width:640px){.modal{border-radius:16px; border-bottom:3px solid var(--ink); box-shadow:5px 5px 0 var(--shadow-hard);}}
+.modal h2{margin-top:0;}
+.modal-close{float:right;}
+
+.diploma{border:4px double var(--albero); border-radius:16px; padding:22px; text-align:center; background:var(--paper);}
+.diploma .seal{font-size:3rem;}
+.pieces-final{display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin:14px 0;}
+
+.confetti-layer{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:30;}
+.confetto{position:absolute; top:-20px; font-size:1.4rem; animation:fall linear forwards;}
+@keyframes fall{to{transform:translateY(110vh) rotate(300deg); opacity:.9;}}
+
+.guide-step{border-left:4px solid var(--albero); padding-left:12px; margin-bottom:14px;}
+.guide-step h3{margin:0 0 4px; font-size:1rem;}
+.guide-step p{margin:0; font-size:.92rem; color:var(--ink-soft);}
+
+.footer-note{text-align:center; font-size:.78rem; color:var(--ink-soft); padding:18px 16px 0;}
+</style>
+
+<div id="app"></div>
+
+<script>
+(function(){
+  "use strict";
+  var STORAGE_KEY = 'pepe-cenachero-hunt-v2';
+
+  var CHARACTERS = {
+    camille:  { key:'camille',  name:'Camille',  age:5,  emoji:'🦋', tagline:'La Petite Exploratrice' },
+    maeva:    { key:'maeva',    name:'Maeva',    age:8,  emoji:'🌻', tagline:'L’Observatrice' },
+    madeline: { key:'madeline', name:'Madeline', age:9,  emoji:'🔍', tagline:'L’Enquêtrice en Chef' },
+    leopold:  { key:'leopold',  name:'Léopold',  age:12, emoji:'🧭', tagline:'Le Grand Déducteur' }
+  };
+  var CHAR_ORDER = ['camille','maeva','madeline','leopold'];
+
+  function buildMapsUrl(query){
+    return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(query) + '&travelmode=walking';
+  }
+  var FULL_ROUTE_URL = 'https://www.google.com/maps/dir/?api=1' +
+    '&origin=' + encodeURIComponent('Plaza de la Marina, Málaga, Espagne') +
+    '&destination=' + encodeURIComponent('Puente de los Alemanes, Málaga, Espagne') +
+    '&waypoints=' + encodeURIComponent('Calle Marqués de Larios, Málaga, Espagne') + '|' +
+      encodeURIComponent('Plaza de la Constitución, Málaga, Espagne') + '|' +
+      encodeURIComponent('Iglesia de San Juan Bautista, Málaga, Espagne') + '|' +
+      encodeURIComponent('Mercado Central de Atarazanas, Málaga, Espagne') +
+    '&travelmode=walking';
+
+  var STEPS = [
+    {
+      title:"La Plaza de la Marina", subtitle:"Un conteur danois au soleil", distance:"0,0 km",
+      mapsQuery:"Plaza de la Marina, Málaga, Espagne",
+      story:"Regardez ce monsieur en bronze, assis tranquillement sur un banc : pas de couronne, pas d’épée, juste un carnet ! C’est Hans Christian Andersen, l’auteur du Vilain Petit Canard. En octobre 1862, il est venu à Málaga et a tellement aimé le soleil qu’il l’a écrit dans son carnet de voyage.",
+      extra:"Sur la plaque, une date : 1862. Étrange pour un conteur mélancolique de n’avoir trouvé ici aucune raison d’être triste !",
+      missions:{
+        camille:{prompt:"Regarde la statue : Monsieur Andersen est-il assis ou debout ?", type:"choice", options:["Assis 🪑","Debout 🚶"], answer:0,
+          success:"Bravo Camille ! Bien assis, comme pour écouter une histoire.", hint:"Regarde s’il a les jambes pliées sur le banc…",
+          piece:{emoji:"🪑",label:"Le Banc"}},
+        maeva:{prompt:"Regarde ses mains : que tient Andersen ?", type:"choice", options:["Une épée ⚔️","Un carnet 📓","Un parapluie ☂️"], answer:1,
+          success:"Exact ! Un conteur ne sort jamais sans son carnet d’idées.", hint:"Ce n’est pas une arme, c’est un objet pour écrire…",
+          piece:{emoji:"📓",label:"Le Carnet"}},
+        madeline:{prompt:"Observe bien : la statue est-elle posée sur un grand socle de pierre, comme une statue de roi, ou directement sur un banc public comme tout le monde ?", type:"choice",
+          options:["Sur un grand socle royal","Sur un simple banc public"], answer:1,
+          success:"Bien vu Madeline ! Andersen est assis parmi les gens, pas sur un piédestal.", hint:"Cherche s’il y a un bloc de pierre surélevé sous lui…",
+          piece:{emoji:"🎩",label:"Le Banc Public"}},
+        leopold:{prompt:"Additionne les 4 chiffres de l’année du voyage (1+8+6+2), puis calcule l’écart avec le nombre de lettres du nom de la ville natale d’Andersen, Odense (6 lettres). Quel est ce nombre-pivot ?", type:"number", answer:11,
+          success:"Parfait ! 17 et 6 donnent le nombre-pivot 11.", hint:"1+8+6+2 = 17. Puis 17 − 6 = ?",
+          piece:{emoji:"🔢",label:"Nombre 11"}}
+      },
+      teamRiddle:{prompt:"Demandez à votre grand enquêteur (12 ans) : quel est le nombre-pivot qu’il a trouvé ? Il ouvre la direction à suivre !", type:"number", answer:11,
+        success:"Le nombre 11 ouvre la route vers le NORD, direction la grande avenue commerçante !"},
+      funfact:"Un conteur triste incapable de trouver une seule raison d’être triste ici : voilà le vrai miracle andalou !"
+    },
+    {
+      title:"Calle Marqués de Larios", subtitle:"La rue qui dansait", distance:"0,6 km",
+      mapsQuery:"Calle Marqués de Larios, Málaga, Espagne",
+      story:"Bienvenue sur la plus belle avenue de Málaga, dessinée à la fin du 19e siècle par l’architecte Eduardo Strachan. Regardez les angles des immeubles : tout ronds ! Le jour de l’inauguration en 1891, la rue était recouverte d’un parquet en bois ciré, comme une salle de bal : on l’appelait le « Salón de Baile » ! Chiens et chevaux étaient interdits, pour ne pas rayer le beau parquet.",
+      extra:"En 2018, cette rue a battu un record du monde : 3920 danseurs de flamenco en même temps ! Et en 1931, la statue du marquis Larios a même fini à la mer, jetée par des révolutionnaires, avant de revenir sur son socle après la guerre civile.",
+      missions:{
+        camille:{prompt:"Regarde les coins des immeubles, tout en haut : sont-ils pointus ou tout ronds ?", type:"choice", options:["Pointus ◼️","Tout ronds ⬤"], answer:1,
+          success:"Bravo ! Des coins tout ronds, comme un bonbon.", hint:"Lève les yeux vers le sommet des façades…",
+          piece:{emoji:"⬤",label:"Coins Ronds"}},
+        maeva:{prompt:"En 1891, un animal n’avait pas le droit de marcher sur le parquet ciré de cette rue. Lequel ?", type:"choice", options:["Le chat 🐈","Le chien 🐕","Le poisson 🐟"], answer:1,
+          success:"Exact, les chiens (et les chevaux !) étaient bannis du salon de danse.", hint:"C’est un animal qui gratte le sol avec ses griffes…",
+          piece:{emoji:"🐕",label:"Chien Interdit"}},
+        madeline:{prompt:"Regarde le sol aujourd’hui : est-il en bois ciré, ou en belles dalles de pierre claire ?", type:"choice", options:["En bois ciré","En dalles de pierre claire"], answer:1,
+          success:"Oui ! Le parquet a disparu depuis longtemps, emporté par une inondation.", hint:"Le bois n’aurait pas résisté à cent ans de pluie…",
+          piece:{emoji:"🪨",label:"Dalles Claires"}},
+        leopold:{prompt:"En quel siècle cette avenue a-t-elle été conçue, et pourquoi les angles arrondis empêchent-ils la poussière de former des tourbillons ?", type:"choice",
+          options:["18e siècle — le vent rebondit sur les angles pointus","19e siècle — le vent glisse sans à-coup, sans coin pour créer un tourbillon","20e siècle — c’est un hasard, aucune raison"], answer:1,
+          success:"Bien raisonné : fin du 19e siècle, et l’air glisse sur les courbes sans créer de tourbillon.", hint:"Pense à l’aérodynamisme : un coin pointu accroche l’air, une courbe le laisse filer…",
+          piece:{emoji:"🌀",label:"19e Siècle"}}
+      },
+      teamRiddle:{prompt:"Comment surnommait-on cette rue à cause de son parquet brillant ? (Rappelez-vous l’histoire de Pepe !)", type:"choice",
+        options:["Le Salón de Baile (le salon de danse)","La Casa del Rey","El Jardín Secreto"], answer:0,
+        success:"Le Salón de Baile ! En avant vers la grande place centrale."},
+      funfact:"Imaginez tout le monde marcher en chaussettes de feutre pour ne pas rayer le sol public… quelle drôle d’époque !"
+    },
+    {
+      title:"Plaza de la Constitución", subtitle:"La bataille des sirènes", distance:"1,2 km",
+      mapsQuery:"Plaza de la Constitución, Málaga, Espagne",
+      story:"Voici la Fuente de Génova, une fontaine en marbre blanc sculptée en Italie il y a près de 500 ans ! La légende raconte qu’elle fut prise sur des bateaux pirates par des navires espagnols. Regardez ses trois étages : en bas des créatures marines, au milieu des sirènes avec des dauphins, et tout en haut Neptune, le roi de la mer, avec son arme à trois pointes.",
+      extra:null,
+      missions:{
+        camille:{prompt:"Regarde tout en haut de la fontaine : quel oiseau est posé là ?", type:"choice", options:["Un aigle 🦅","Un moineau 🐦","Un perroquet 🦜"], answer:0,
+          success:"Un aigle ! Le chef de la sécurité, pour empêcher les pigeons de se baigner avec Neptune.", hint:"C’est un grand oiseau majestueux, pas un petit oiseau du jardin…",
+          piece:{emoji:"🦅",label:"L’Aigle Gardien"}},
+        maeva:{prompt:"Regarde les créatures marines tout en bas de la fontaine : ont-elles une seule queue de poisson, ou deux queues ?", type:"choice", options:["Une seule queue","Deux queues"], answer:1,
+          success:"Deux queues ! Ce sont des sirènes bifides. Retiens bien ce chiffre : 2.", hint:"Compte bien sous la ceinture de chaque sirène…",
+          piece:{emoji:"🧜",label:"2 Queues"}},
+        madeline:{prompt:"Regarde le sommet : Neptune tient un objet à trois pointes. Comment s’appelle cet objet ?", type:"choice", options:["Une fourchette","Un trident","Une lance"], answer:1,
+          success:"Un trident ! L’arme du roi des mers.", hint:"Ça ressemble à une fourchette géante à trois dents…",
+          piece:{emoji:"🔱",label:"Le Trident"}},
+        leopold:{prompt:"Compte le nombre de côtés du bassin (c’est un polygone très régulier), puis ajoute le nombre de queues des sirènes que Maeva a trouvé. Quelle lettre de l’alphabet correspond à ce total ?", type:"text", answer:"n",
+          success:"12 côtés + 2 queues = 14e lettre : le N, comme Neptune !", hint:"Le bassin a 12 côtés. 12 + 2 = ? Cherche la 14e lettre de l’alphabet…",
+          piece:{emoji:"🅽",label:"Lettre N"}}
+      },
+      teamRiddle:{prompt:"La lettre N pointe vers un passage caché. Où se trouve-t-il sur la place ?", type:"choice",
+        options:["Angle nord-est","Angle sud-ouest","Au milieu de la fontaine"], answer:0,
+        success:"Angle nord-est ! Direction le passage secret."},
+      funfact:"L’aigle veille jour et nuit : aucun pigeon n’a jamais réussi à piquer une tête avec Neptune !"
+    }
+    ,{
+      title:"Pasaje de Chinitas & Église San Juan", subtitle:"Les cinq boules mystérieuses", distance:"1,9 km",
+      mapsQuery:"Iglesia de San Juan Bautista, Málaga, Espagne",
+      story:"Ce passage couvert, le Pasaje de Chinitas, était autrefois un couvent de religieuses, puis un célèbre café flamenco chanté par le poète Federico García Lorca. En sortant vers l’église San Juan Bautista, regardez sa tour, reconstruite après un terrible tremblement de terre en 1680 : cinq boules de pierre y sont accrochées, en forme de flèche ! On les appelle « Las Cinco Bolas ». Boulets de canon d’un ancien siège, ou message secret ? Le mystère reste entier…",
+      extra:null,
+      missions:{
+        camille:{prompt:"Les cinq boules de pierre sur la tour sont rangées en forme de quoi ?", type:"choice", options:["Un cœur ❤️","Une flèche ➡️","Une étoile ⭐"], answer:1,
+          success:"Une flèche ! Bien vu, petite exploratrice.", hint:"Elles pointent toutes dans la même direction, comme une flèche…",
+          piece:{emoji:"➡️",label:"La Flèche"}},
+        maeva:{prompt:"Compte les boules de pierre sur la tour : combien en vois-tu ?", type:"number", answer:5,
+          success:"Cinq boules exactement !", hint:"Compte-les une par une avec ton doigt…",
+          piece:{emoji:"5️⃣",label:"Cinq Boules"}},
+        madeline:{prompt:"Vers quelle direction pointe la flèche des cinq boules : vers le ciel, ou vers le bas ?", type:"choice", options:["Vers le ciel ☁️","Vers le bas ⬇️"], answer:1,
+          success:"Vers le bas ! Peut-être un message pointant vers une maison du quartier.", hint:"Suis la pointe de la flèche avec ton doigt…",
+          piece:{emoji:"⬇️",label:"Direction : Bas"}},
+        leopold:{prompt:"Calcule l’écart entre l’année du tremblement de terre (1680) et l’année du grand siège (1487). Puis multiplie le nombre de boules (5) par 10, et soustrais ce résultat à ton premier écart. Quelle distance obtiens-tu, en mètres ?", type:"number", answer:143,
+          success:"1680 − 1487 = 193, puis 193 − 50 = 143 mètres !", hint:"1680 − 1487 = 193. Puis 5×10 = 50. Enfin 193 − 50 = ?",
+          piece:{emoji:"🔟",label:"143 mètres"}}
+      },
+      teamRiddle:{prompt:"Quelle distance en mètres sépare cette tour du prochain arrêt gourmand ? (Demandez à votre grand enquêteur !)", type:"number", answer:143,
+        success:"143 mètres ! Direction le marché, votre ventre va être content."},
+      funfact:"Cinq boules, un mystère jamais résolu : même les historiens ne sont pas d’accord !"
+    }
+    ,{
+      title:"Marché Atarazanas", subtitle:"La pause Torta Loca", distance:"2,5 km",
+      mapsQuery:"Mercado Central de Atarazanas, Málaga, Espagne",
+      story:"Vous voici près du Marché Atarazanas, une ancienne porte de chantier naval du 14e siècle en marbre ! Arrêtez-vous devant une pâtisserie pour goûter LA gourmandise de Málaga : la Torta Loca (le « gâteau fou »), inventée à la fin des années 1950 par le pâtissier Eduardo Rubio. Deux disques de pâte feuilletée, une généreuse crème pâtissière, un glaçage orange fluo… et une demi-cerise confite rouge vif au centre !",
+      extra:"Son nom vient d’une chanson à la radio en 1954 : « À la folie on vit mieux » (A lo loco se vive mejor) !",
+      missions:{
+        camille:{prompt:"Trouve le gâteau orange avec une petite cerise rouge au centre. Quelle est sa couleur principale ?", type:"choice", options:["Orange 🟠","Bleu 🔵","Vert 🟢"], answer:0,
+          success:"Orange fluo, impossible à manquer !", hint:"Cherche la couleur la plus flashy de la vitrine…",
+          piece:{emoji:"🟠",label:"Gâteau Orange"}},
+        maeva:{prompt:"Goûte un petit morceau : que sens-tu à l’intérieur ?", type:"choice", options:["De la crème pâtissière 🍮","Du chocolat 🍫","De la confiture de fraise 🍓"], answer:0,
+          success:"De la bonne crème pâtissière bien onctueuse !", hint:"C’est doux, jaune pâle, et ça fond dans la bouche…",
+          piece:{emoji:"🍮",label:"Crème Pâtissière"}},
+        madeline:{prompt:"Regarde bien le centre du gâteau : la cerise confite est-elle entière, ou coupée en deux (une demi-cerise) ?", type:"choice", options:["Entière","Une demi-cerise"], answer:1,
+          success:"Une demi-cerise, bien rouge, posée pile au centre.", hint:"Observe si elle est ronde en entier ou si elle a un côté plat…",
+          piece:{emoji:"🍒",label:"Demi-Cerise"}},
+        leopold:{prompt:"Ce gâteau porte le nom d’une chanson populaire plutôt qu’un nom savant de pâtissier. Pourquoi, selon toi ?", type:"choice",
+          options:["Parce que c’était un dessert simple et joyeux pour se remonter le moral après la guerre, comme la chanson","Parce que le pâtissier était réellement fou","Par pur hasard, sans aucune raison"], answer:0,
+          success:"Exactement : un nom populaire et joyeux pour des jours qui avaient besoin de légèreté.", hint:"Pense à l’ambiance d’après-guerre, et à ce que cherchaient les gens à cette époque…",
+          piece:{emoji:"🎵",label:"Chanson 1954"}}
+      },
+      teamRiddle:{prompt:"Tout le monde a goûté la Torta Loca ? Levez les quatre pouces en l’air pour valider l’étape gourmande !", type:"confirm",
+        success:"Quatre pouces levés, quatre enquêteurs rechargés en énergie !"},
+      funfact:"Un gâteau baptisé d’après un tube radiophonique plutôt que par un mot savant de cuisine : voilà qui est bien plus amusant !"
+    }
+    ,{
+      title:"Puente de los Alemanes & Cathédrale", subtitle:"Le grand sauvetage", distance:"3,2 km",
+      mapsQuery:"Puente de los Alemanes, Málaga, Espagne",
+      story:"Vous voilà sur le Puente de los Alemanes, au bord du fleuve Guadalmedina. Le 16 décembre 1900, un grand navire de guerre allemand a été jeté contre les rochers du port par une tempête terrible. Les habitants de Málaga se sont jetés à l’eau pour sauver les marins, au péril de leur vie ! Pour les remercier de leur courage, le roi a donné à la ville un titre très spécial. En cadeau, le peuple allemand a offert cette passerelle. Juste à côté, la Cathédrale révèle un secret : il lui manque quelque chose !",
+      extra:null,
+      missions:{
+        camille:{prompt:"Regarde la Cathédrale : a-t-elle deux tours pareilles, ou une seule tour terminée ?", type:"choice", options:["Deux tours pareilles 🏰🏰","Une seule tour terminée 🏰"], answer:1,
+          success:"Une seule ! On l’appelle même « La Manquita » à cause de sa tour manquante.", hint:"Compare bien les deux côtés du haut de la cathédrale…",
+          piece:{emoji:"🏰",label:"Une Seule Tour"}},
+        maeva:{prompt:"Trouve sur la plaque du pont le nom du bateau allemand naufragé. Il commence par un G…", type:"choice", options:["Gneisenau","Bismarck","Titanic"], answer:0,
+          success:"Le Gneisenau ! Bravo pour cette lecture.", hint:"C’est un mot allemand assez long, gravé dans le métal…",
+          piece:{emoji:"⚓",label:"Le Gneisenau"}},
+        madeline:{prompt:"En quelle année ce naufrage a-t-il eu lieu ?", type:"choice", options:["1900","1850","1950"], answer:0,
+          success:"1900, le 16 décembre exactement !", hint:"C’est le tout début du 20e siècle…",
+          piece:{emoji:"🌊",label:"Année 1900"}},
+        leopold:{prompt:"Grâce au courage des habitants de Málaga pour sauver les marins allemands, quel titre le roi a-t-il donné à la ville ?", type:"choice",
+          options:["« Muy Hospitalaria » (Très Hospitalière)","« Muy Valiente » (Très Courageuse)","« Muy Antigua » (Très Ancienne)"], answer:0,
+          success:"« Muy Hospitalaria » ! Le titre le plus juste pour cette ville accueillante.", hint:"Pense à ce que les Malagènes ont offert aux marins étrangers ce jour-là…",
+          piece:{emoji:"🏅",label:"Muy Hospitalaria"}}
+      },
+      teamRiddle:{prompt:"Ensemble, à voix haute, dites le titre complet donné à Málaga en l’honneur de ce sauvetage héroïque !", type:"confirm",
+        success:"« Muy Hospitalaria » ! Vous avez percé les secrets de Málaga !"},
+      funfact:"La vraie richesse de Málaga n’est pas dans un coffre au trésor, mais dans son histoire et l’hospitalité de ses habitants."
+    }
+  ];
+
+  var PARENT_GUIDE = {
+    intro:"Votre rôle : régler la dynamique de groupe sans faire le travail de déduction à la place des enfants. Laissez-les observer, se tromper, s’entraider — intervenez seulement pour orienter le regard ou confirmer une observation physique.",
+    logistics:{
+      zone:"Triangle Marina – Constitución – Atarazanas – Guadalmedina, entièrement piéton, aucune traversée à grand trafic.",
+      length:"3,2 km en boucle fermée.",
+      duration:"2 h 15 à 2 h 45, pause dégustation incluse.",
+      hydration:"Points d’ombre et d’eau conseillés : Plaza de la Marina, parvis de San Juan, Atarazanas.",
+      kit:["Carnet de bord (ou l’iPad de chacun)","Une loupe","Un mètre ruban","Une boussole","Eau, casquettes, crème solaire"],
+      refuel:"Étape 5 : confiserie du secteur San Juan / Atarazanas — dégustation de la Torta Loca."
+    },
+    perStep:[
+      "Vérifiez que Camille a bien repéré la posture décontractée de la statue (assise, sans socle) et validez le calcul de Léopold : 1+8+6+2=17, puis 17−6=11.",
+      "Orientez le regard vers les corniches qui convergent au loin, et faites remarquer l’absence de tout dallage en bois aujourd’hui — emporté par les crues du début du XXe siècle.",
+      "Confirmez : les créatures du premier niveau sont bien des sirènes à deux queues, Neptune brandit un trident, et le bassin compte 12 côtés (12+2 = 14e lettre, N).",
+      "Confirmez l’orientation de la flèche de pierre (vers le bas) et vérifiez la soustraction chronologique : 1680−1487=193, puis 193−(5×10)=143.",
+      "Validez la reconnaissance des ingrédients (jaune d’œuf, crème, feuilletage) et l’explication du nom populaire emprunté à la chanson radiophonique d’après-guerre.",
+      "Guidez l’assemblage final : reliez le sauvetage du Gneisenau (1900) au titre « Muy Hospitalaria », et faites constater de visu la tour manquante de la cathédrale."
+    ]
+  };
+
+  function defaultState(){ return { character:null, stepIndex:0, missionDone:{}, teamDone:{}, attempts:{} }; }
+  function loadState(){
+    try{ var s = JSON.parse(localStorage.getItem(STORAGE_KEY)); return s || defaultState(); }
+    catch(e){ return defaultState(); }
+  }
+  function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+  var state = loadState();
+
+  var app = document.getElementById('app');
+
+  function mascotSvg(size){
+    size = size || 64;
+    return `<svg width="${size}" height="${size}" viewBox="0 0 120 120" role="img" aria-label="Pepe el Cenachero">
+      <circle cx="60" cy="68" r="38" fill="#E7B583"/>
+      <path d="M14 52 Q60 2 106 52 Q60 34 14 52Z" style="fill:var(--albero)"/>
+      <rect x="10" y="46" width="100" height="11" rx="5.5" style="fill:var(--albero)"/>
+      <circle cx="47" cy="70" r="4.2" style="fill:var(--ink)"/>
+      <circle cx="75" cy="70" r="4.2" style="fill:var(--ink)"/>
+      <path d="M40 86 Q60 98 82 86" style="stroke:var(--ink)" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M34 82 Q47 74 41 84 Q52 78 60 84 Q68 78 81 84 Q75 74 88 82" style="stroke:var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </svg>`;
+  }
+
+  function piecesForChar(){
+    var pieces = [];
+    for (var i=0;i<STEPS.length;i++){
+      var m = STEPS[i].missions[state.character];
+      if (state.missionDone[i] && m && m.piece) pieces.push(m.piece);
+    }
+    return pieces;
+  }
+
+  function badgeStripHtml(){
+    var pieces = piecesForChar();
+    var html = '<div class="badge-strip">';
+    for (var i=0;i<STEPS.length;i++){
+      if (pieces[i]) html += `<div class="badge-piece" title="${pieces[i].label}">${pieces[i].emoji}</div>`;
+      else html += '<div class="badge-piece empty">?</div>';
+    }
+    return html + '</div>';
+  }
+
+  function topbarHtml(stepIndex){
+    var c = CHARACTERS[state.character];
+    var stepLabel = stepIndex < STEPS.length ? ('Étape ' + (stepIndex+1) + '/' + STEPS.length) : 'Terminé !';
+    var dist = STEPS[Math.min(stepIndex, STEPS.length-1)].distance;
+    return `<div class="topbar char-${state.character}">
+      <div class="tile tile-char">${c.emoji} ${c.name} · ${c.age} ans</div>
+      <div class="tile">${stepLabel}</div>
+      <div class="tile">📍 ${dist}</div>
+      <div class="spacer"></div>
+      <button class="icon-btn" onclick="PG.openModal('kit')" aria-label="Kit de l’enquêteur">🎒</button>
+      <button class="icon-btn" onclick="PG.openModal('parent')" aria-label="Espace parent">👪</button>
+    </div>`;
+  }
+
+  function normalizeText(v){ return (v||'').toString().trim().toLowerCase(); }
+
+  function missionSectionHtml(step, stepIndex){
+    var m = step.missions[state.character];
+    var done = !!state.missionDone[stepIndex];
+    var attempts = state.attempts[stepIndex] || 0;
+    var c = CHARACTERS[state.character];
+    var body = '';
+    if (done){
+      body = `<div class="stamp">✔ Validé — ${m.piece.emoji} ${m.piece.label}</div><p>${m.success}</p>`;
+    } else {
+      body += `<p class="prompt">${m.prompt}</p>`;
+      if (m.type === 'choice'){
+        body += '<div class="choice-grid">' + m.options.map(function(opt,i){
+          return `<button class="choice-btn" onclick="PG.answerChoice(${stepIndex},${i})">${opt}</button>`;
+        }).join('') + '</div>';
+      } else if (m.type === 'number' || m.type === 'text'){
+        var itype = m.type === 'number' ? 'number' : 'text';
+        var imode = m.type === 'number' ? ' inputmode="numeric"' : '';
+        body += `<div class="input-row">
+          <input class="field" type="${itype}"${imode} id="mission-input-${stepIndex}" placeholder="Ta réponse" onkeydown="if(event.key==='Enter')PG.answerField(${stepIndex})">
+          <button class="btn btn-primary" onclick="PG.answerField(${stepIndex})">Valider</button>
+        </div>`;
+      } else if (m.type === 'confirm'){
+        body += `<button class="btn btn-go btn-block" onclick="PG.answerConfirm(${stepIndex})">✅ C’est fait !</button>`;
+      }
+      if (attempts > 0){
+        body += `<div class="feedback no">Pas tout à fait ! Réessaie.</div><p class="hint">💡 ${m.hint||''}</p>`;
+      }
+      if (attempts >= 3 && m.type !== 'confirm'){
+        body += `<button class="btn btn-ghost" onclick="PG.revealMission(${stepIndex})">👉 Révéler la réponse</button>`;
+      }
+    }
+    return `<div class="card char char-${state.character}">
+      <div class="eyebrow"><span class="dot"></span>Mission de ${c.name}</div>
+      ${body}
+    </div>`;
+  }
+
+  function teamSectionHtml(step, stepIndex){
+    var missionDone = !!state.missionDone[stepIndex];
+    var done = !!state.teamDone[stepIndex];
+    var attempts = state.attempts['t'+stepIndex] || 0;
+    var tr = step.teamRiddle;
+    if (!missionDone){
+      return `<div class="card"><div class="eyebrow"><span class="dot"></span>Énigme d’équipe 🤝</div>
+        <p class="hint">🔒 Termine d’abord ta mission pour débloquer l’énigme commune.</p></div>`;
+    }
+    var body = '';
+    if (done){
+      body = `<div class="stamp">✔ Débloqué</div><p>${tr.success}</p>`;
+    } else {
+      body += `<p class="prompt">${tr.prompt}</p>`;
+      if (tr.type === 'choice'){
+        body += '<div class="choice-grid">' + tr.options.map(function(opt,i){
+          return `<button class="choice-btn" onclick="PG.teamChoice(${i})">${opt}</button>`;
+        }).join('') + '</div>';
+      } else if (tr.type === 'number' || tr.type === 'text'){
+        var itype = tr.type === 'number' ? 'number' : 'text';
+        var imode = tr.type === 'number' ? ' inputmode="numeric"' : '';
+        body += `<div class="input-row">
+          <input class="field" type="${itype}"${imode} id="team-input" placeholder="Votre réponse" onkeydown="if(event.key==='Enter')PG.teamField()">
+          <button class="btn btn-primary" onclick="PG.teamField()">Valider</button>
+        </div>`;
+      } else if (tr.type === 'confirm'){
+        body += `<button class="btn btn-go btn-block" onclick="PG.teamConfirm()">✅ On est prêts !</button>`;
+      }
+      if (attempts > 0) body += `<div class="feedback no">Discutez-en encore un peu tous ensemble…</div>`;
+      if (attempts >= 3 && tr.type !== 'confirm'){
+        body += `<button class="btn btn-ghost" onclick="PG.revealTeam()">👉 Révéler la réponse</button>`;
+      }
+    }
+    return `<div class="card"><div class="eyebrow"><span class="dot"></span>Énigme d’équipe 🤝</div>${body}</div>`;
+  }
+
+  function footerSectionHtml(step, stepIndex){
+    if (!state.teamDone[stepIndex]) return '';
+    var isLast = stepIndex === STEPS.length - 1;
+    var mapsBtn = isLast ? '' : `<a class="maps-link" href="${buildMapsUrl(STEPS[stepIndex+1].mapsQuery)}" target="_blank" rel="noopener">🗺️ Ouvrir l’itinéraire vers la suite</a>`;
+    return `<div class="card"><div class="eyebrow"><span class="dot"></span>Le sais-tu ?</div><p>${step.funfact}</p></div>
+      ${mapsBtn}
+      <button class="btn btn-go btn-block" onclick="PG.nextStep()">${isLast ? '🏆 Voir le diplôme final' : '➡️ Étape suivante'}</button>`;
+  }
+
+  function renderWelcome(){
+    var picks = CHAR_ORDER.map(function(key){
+      var c = CHARACTERS[key];
+      return `<div class="char-card char-${key}" onclick="PG.selectChar('${key}')">
+        <div class="avatar">${c.emoji}</div>
+        <div class="cname">${c.name}</div>
+        <div class="cage">${c.age} ANS</div>
+        <div class="ctag">${c.tagline}</div>
+      </div>`;
+    }).join('');
+    app.innerHTML = `<div class="app-shell">
+      <div class="hero">
+        ${mascotSvg(84)}
+        <h1 class="disp">Le Trésor de Pepe el Cenachero</h1>
+        <p>Un jeu de piste dans les ruelles de Málaga. Chacun sa mission : il faut s’entraider pour avancer !</p>
+      </div>
+      <div class="screen">
+        <div class="card">
+          <div class="eyebrow"><span class="dot"></span>Qui es-tu ?</div>
+          <div class="char-grid">${picks}</div>
+        </div>
+        <div class="card">
+          <div class="eyebrow"><span class="dot"></span>Avant de partir</div>
+          <ul class="kit-list">
+            <li>🎒 De l’eau et une casquette pour chacun</li>
+            <li>🔍 Une loupe, un mètre ruban, une boussole (ou juste vos yeux !)</li>
+            <li>🚶 3,2 km de balade tranquille, environ 2h30 avec la pause goûter</li>
+            <li>👪 Un adulte qui aide sans donner les réponses</li>
+          </ul>
+        </div>
+        <a class="maps-link" href="${FULL_ROUTE_URL}" target="_blank" rel="noopener">🗺️ Voir tout le parcours sur Google Maps</a>
+      </div>
+      <p class="footer-note">Chaque enquêteur choisit son propre profil, sur son propre iPad.</p>
+    </div>`;
+  }
+
+  function renderStep(){
+    var stepIndex = state.stepIndex;
+    var step = STEPS[stepIndex];
+    app.innerHTML = `<div class="app-shell">
+      ${topbarHtml(stepIndex)}
+      <div class="progress-track"><div class="progress-fill char-${state.character}" style="width:${Math.round(stepIndex/STEPS.length*100)}%"></div></div>
+      ${badgeStripHtml()}
+      <div class="screen">
+        <div class="mascot-row">
+          <div class="mascot-face">${mascotSvg(56)}</div>
+          <div class="mascot-bubble">
+            <p class="mascot-name">Pepe raconte…</p>
+            <p>${step.story}</p>
+            ${(state.character==='leopold' && step.extra) ? `<div class="extra-fact">🧠 Pour les grands curieux : ${step.extra}</div>` : ''}
+          </div>
+        </div>
+        ${missionSectionHtml(step, stepIndex)}
+        ${teamSectionHtml(step, stepIndex)}
+        ${footerSectionHtml(step, stepIndex)}
+      </div>
+    </div>`;
+  }
+
+  function renderFinal(){
+    var c = CHARACTERS[state.character];
+    var pieces = piecesForChar();
+    var piecesHtml = pieces.map(function(p){ return `<div class="badge-piece" title="${p.label}">${p.emoji}</div>`; }).join('');
+    app.innerHTML = `<div class="app-shell">
+      ${topbarHtml(STEPS.length)}
+      <div class="screen">
+        <div class="diploma">
+          <div class="seal">🏅</div>
+          <h2 class="disp">Diplôme du Vrai Malagueño</h2>
+          <p>Décerné à</p>
+          <h3 class="disp char-${state.character}" style="color:var(--char)">${c.emoji} ${c.name}</h3>
+          <p>Pour avoir percé, avec courage et curiosité, les secrets cachés de Málaga.</p>
+          <div class="pieces-final">${piecesHtml}</div>
+          <p><strong>« Muy Hospitalaria »</strong><br>— le titre que Málaga porte depuis 1900, en mémoire du sauvetage du Gneisenau.</p>
+        </div>
+        <div class="card"><p>La vraie richesse de Málaga n’est pas dans un coffre au trésor, mais dans son histoire et l’hospitalité de ses habitants. ¡Enhorabuena, enquêteurs !</p></div>
+        <button class="btn btn-ghost btn-block" onclick="PG.resetGame()">↺ Recommencer l’aventure</button>
+      </div>
+    </div>`;
+  }
+
+  function openModal(which){
+    var html = '';
+    if (which === 'kit'){
+      var g = PARENT_GUIDE;
+      html = `<h2 class="disp">🎒 Kit de l’enquêteur</h2>
+        <p>${g.logistics.zone}</p>
+        <ul class="kit-list">${g.logistics.kit.map(function(k){return '<li>• '+k+'</li>';}).join('')}</ul>
+        <p class="hint">${g.logistics.duration} — ${g.logistics.length}</p>
+        <p class="hint">${g.logistics.hydration}</p>
+        <p class="hint">🍰 ${g.logistics.refuel}</p>`;
+    } else if (which === 'parent'){
+      var g2 = PARENT_GUIDE;
+      var perStepHtml = g2.perStep.map(function(txt,i){
+        return `<div class="guide-step"><h3>Étape ${i+1} — ${STEPS[i].title}</h3><p>${txt}</p></div>`;
+      }).join('');
+      html = `<h2 class="disp">👪 Espace parent</h2>
+        <p>${g2.intro}</p>
+        ${perStepHtml}
+        <button class="btn btn-ghost btn-block" onclick="PG.changeChar()">Changer de profil sur cet iPad</button>`;
+    }
+    html += `<button class="btn btn-block" style="margin-top:12px" onclick="PG.closeModal()">Fermer</button>`;
+    var overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.id = 'pg-modal';
+    overlay.innerHTML = `<div class="modal">${html}</div>`;
+    overlay.addEventListener('click', function(e){ if (e.target === overlay) closeModal(); });
+    document.body.appendChild(overlay);
+  }
+  function closeModal(){
+    var el = document.getElementById('pg-modal');
+    if (el) el.remove();
+  }
+
+  function burstConfetti(){
+    var layer = document.createElement('div');
+    layer.className = 'confetti-layer';
+    var emojis = ['🎉','✨','🌟','🐟','🌸','🏅'];
+    for (var i=0;i<22;i++){
+      var s = document.createElement('span');
+      s.className = 'confetto';
+      s.textContent = emojis[i % emojis.length];
+      s.style.left = (Math.random()*100) + 'vw';
+      s.style.animationDuration = (1.6 + Math.random()*1.2) + 's';
+      s.style.animationDelay = (Math.random()*0.3) + 's';
+      layer.appendChild(s);
+    }
+    document.body.appendChild(layer);
+    setTimeout(function(){ layer.remove(); }, 3200);
+  }
+
+  function markMissionDone(stepIndex){ state.missionDone[stepIndex] = true; saveState(); burstConfetti(); render(); }
+  function markMissionWrong(stepIndex){ state.attempts[stepIndex] = (state.attempts[stepIndex]||0) + 1; saveState(); render(); }
+  function markTeamDone(stepIndex){ state.teamDone[stepIndex] = true; saveState(); burstConfetti(); render(); }
+  function markTeamWrong(stepIndex){ state.attempts['t'+stepIndex] = (state.attempts['t'+stepIndex]||0) + 1; saveState(); render(); }
+
+  var PG = {
+    selectChar:function(key){ state.character = key; saveState(); render(); },
+    changeChar:function(){ closeModal(); state = defaultState(); saveState(); render(); },
+    resetGame:function(){ state = defaultState(); saveState(); render(); },
+    openModal:openModal,
+    closeModal:closeModal,
+    answerChoice:function(stepIndex, idx){
+      var m = STEPS[stepIndex].missions[state.character];
+      if (idx === m.answer) markMissionDone(stepIndex); else markMissionWrong(stepIndex);
+    },
+    answerField:function(stepIndex){
+      var m = STEPS[stepIndex].missions[state.character];
+      var input = document.getElementById('mission-input-'+stepIndex);
+      var raw = input ? input.value : '';
+      var ok = m.type === 'number' ? (parseInt(raw,10) === m.answer) : (normalizeText(raw) === normalizeText(m.answer));
+      if (ok) markMissionDone(stepIndex); else markMissionWrong(stepIndex);
+    },
+    answerConfirm:function(stepIndex){ markMissionDone(stepIndex); },
+    revealMission:function(stepIndex){ markMissionDone(stepIndex); },
+    teamChoice:function(idx){
+      var tr = STEPS[state.stepIndex].teamRiddle;
+      if (idx === tr.answer) markTeamDone(state.stepIndex); else markTeamWrong(state.stepIndex);
+    },
+    teamField:function(){
+      var tr = STEPS[state.stepIndex].teamRiddle;
+      var input = document.getElementById('team-input');
+      var raw = input ? input.value : '';
+      var ok = tr.type === 'number' ? (parseInt(raw,10) === tr.answer) : (normalizeText(raw) === normalizeText(tr.answer));
+      if (ok) markTeamDone(state.stepIndex); else markTeamWrong(state.stepIndex);
+    },
+    teamConfirm:function(){ markTeamDone(state.stepIndex); },
+    revealTeam:function(){ markTeamDone(state.stepIndex); },
+    nextStep:function(){ state.stepIndex++; saveState(); render(); }
+  };
+  window.PG = PG;
+
+  function render(){
+    if (!state.character){ renderWelcome(); return; }
+    if (state.stepIndex >= STEPS.length){ renderFinal(); return; }
+    renderStep();
+  }
+
+  render();
+})();
+</script>
